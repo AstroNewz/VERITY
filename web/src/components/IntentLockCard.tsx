@@ -52,7 +52,7 @@ export default function IntentLockCard({ intent, onUpdateIntent }: IntentLockCar
         <button
           type="button"
           onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
-          className="brutal-btn brutal-btn-white text-xs py-1 px-3 border-2 shadow-brutal-sm"
+          className="brutal-btn brutal-btn-white text-xs py-1.5 px-3.5 border-2 shadow-brutal-sm min-h-[38px]"
         >
           {isEditing ? "Save Intent" : "Edit Intent"}
         </button>

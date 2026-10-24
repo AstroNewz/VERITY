@@ -104,46 +104,29 @@ export default function ConstitutionPage() {
             Loading Brand Constitution rules...
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left font-mono text-xs border-collapse">
-              <thead>
-                <tr className="bg-ink text-white">
-                  <th className="p-3 border-2 border-ink uppercase">ID</th>
-                  <th className="p-3 border-2 border-ink uppercase">Type</th>
-                  <th className="p-3 border-2 border-ink uppercase">Title & Specification</th>
-                  <th className="p-3 border-2 border-ink uppercase">Severity</th>
-                  <th className="p-3 border-2 border-ink uppercase">Citation Source</th>
-                  <th className="p-3 border-2 border-ink uppercase">Owner</th>
-                  <th className="p-3 border-2 border-ink uppercase text-center">Active</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rules.map((rule) => {
-                  const isCrit = rule.severity === "critical";
-                  const isWarn = rule.severity === "warning";
+          <>
+            {/* Mobile Card-Based Rule List (< lg) */}
+            <div className="block lg:hidden space-y-3">
+              {rules.map((rule) => {
+                const isCrit = rule.severity === "critical";
+                const isWarn = rule.severity === "warning";
 
-                  return (
-                    <tr
-                      key={rule.id}
-                      className={`border-b-2 border-ink hover:bg-cream transition-colors ${
-                        !rule.active ? "opacity-40 bg-gray-50" : ""
-                      }`}
-                    >
-                      <td className="p-3 border-2 border-ink font-bold text-sm bg-yellow-light/50">
-                        {rule.id}
-                      </td>
-                      <td className="p-3 border-2 border-ink uppercase font-bold text-[10px]">
-                        {rule.type}
-                      </td>
-                      <td className="p-3 border-2 border-ink font-sans max-w-sm">
-                        <span className="font-heading font-bold text-sm text-ink block mb-0.5">
-                          {rule.title}
+                return (
+                  <div
+                    key={rule.id}
+                    className={`brutal-card p-4 space-y-3 ${
+                      !rule.active ? "opacity-50 bg-gray-50" : "bg-white"
+                    }`}
+                  >
+                    {/* Header: ID, Type, Severity, Active Toggle */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-ink/20 pb-2">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-mono font-bold text-xs bg-yellow px-2 py-0.5 border border-ink">
+                          {rule.id}
                         </span>
-                        <span className="text-xs text-gray-700 block">
-                          {rule.description}
+                        <span className="brutal-chip text-[9px] uppercase font-bold bg-white text-ink border-ink">
+                          {rule.type}
                         </span>
-                      </td>
-                      <td className="p-3 border-2 border-ink">
                         <span
                           className={`brutal-chip text-[9px] py-0 px-1.5 ${
                             isCrit
@@ -155,32 +138,126 @@ export default function ConstitutionPage() {
                         >
                           {rule.severity.toUpperCase()}
                         </span>
-                      </td>
-                      <td className="p-3 border-2 border-ink text-[11px] text-gray-700">
-                        {rule.source_ref}
-                      </td>
-                      <td className="p-3 border-2 border-ink text-[11px] font-semibold">
-                        {rule.owner}
-                      </td>
-                      <td className="p-3 border-2 border-ink text-center">
-                        <button
-                          type="button"
-                          onClick={() => handleToggleRule(rule)}
-                          className={`px-2 py-0.5 text-[10px] font-bold uppercase border-2 transition-all ${
-                            rule.active
-                              ? "bg-mint text-ink border-ink shadow-brutal-sm"
-                              : "bg-gray-200 text-gray-500 border-gray-400"
-                          }`}
-                        >
-                          {rule.active ? "ON" : "OFF"}
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleToggleRule(rule)}
+                        className={`min-h-[38px] px-3 py-1.5 text-xs font-mono font-bold uppercase border-2 transition-all ${
+                          rule.active
+                            ? "bg-mint text-ink border-ink shadow-brutal-sm"
+                            : "bg-gray-200 text-gray-600 border-gray-400"
+                        }`}
+                      >
+                        {rule.active ? "STATUS: ON" : "STATUS: OFF"}
+                      </button>
+                    </div>
+
+                    {/* Rule Title & Spec */}
+                    <div>
+                      <h3 className="font-heading font-black text-sm text-ink mb-1">
+                        {rule.title}
+                      </h3>
+                      <p className="text-xs font-mono text-gray-700 leading-relaxed">
+                        {rule.description}
+                      </p>
+                    </div>
+
+                    {/* Source & Owner Meta */}
+                    <div className="pt-2 border-t border-ink/10 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
+                      <div className="text-gray-600">
+                        <span className="font-bold uppercase text-[9px] block text-gray-500">Citation:</span>
+                        <span className="text-ink break-words">{rule.source_ref}</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-bold uppercase text-[9px] block text-gray-500">Owner Desk:</span>
+                        <span className="font-semibold text-ink">{rule.owner}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table View (>= lg) */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs border-collapse">
+                <thead>
+                  <tr className="bg-ink text-white">
+                    <th className="p-3 border-2 border-ink uppercase">ID</th>
+                    <th className="p-3 border-2 border-ink uppercase">Type</th>
+                    <th className="p-3 border-2 border-ink uppercase">Title & Specification</th>
+                    <th className="p-3 border-2 border-ink uppercase">Severity</th>
+                    <th className="p-3 border-2 border-ink uppercase">Citation Source</th>
+                    <th className="p-3 border-2 border-ink uppercase">Owner</th>
+                    <th className="p-3 border-2 border-ink uppercase text-center">Active</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rules.map((rule) => {
+                    const isCrit = rule.severity === "critical";
+                    const isWarn = rule.severity === "warning";
+
+                    return (
+                      <tr
+                        key={rule.id}
+                        className={`border-b-2 border-ink hover:bg-cream transition-colors ${
+                          !rule.active ? "opacity-40 bg-gray-50" : ""
+                        }`}
+                      >
+                        <td className="p-3 border-2 border-ink font-bold text-sm bg-yellow-light/50">
+                          {rule.id}
+                        </td>
+                        <td className="p-3 border-2 border-ink uppercase font-bold text-[10px]">
+                          {rule.type}
+                        </td>
+                        <td className="p-3 border-2 border-ink font-sans max-w-sm">
+                          <span className="font-heading font-bold text-sm text-ink block mb-0.5">
+                            {rule.title}
+                          </span>
+                          <span className="text-xs text-gray-700 block">
+                            {rule.description}
+                          </span>
+                        </td>
+                        <td className="p-3 border-2 border-ink">
+                          <span
+                            className={`brutal-chip text-[9px] py-0 px-1.5 ${
+                              isCrit
+                                ? "bg-danger text-white border-ink"
+                                : isWarn
+                                ? "bg-yellow text-ink border-ink"
+                                : "bg-mint text-ink border-ink"
+                            }`}
+                          >
+                            {rule.severity.toUpperCase()}
+                          </span>
+                        </td>
+                        <td className="p-3 border-2 border-ink text-[11px] text-gray-700">
+                          {rule.source_ref}
+                        </td>
+                        <td className="p-3 border-2 border-ink text-[11px] font-semibold">
+                          {rule.owner}
+                        </td>
+                        <td className="p-3 border-2 border-ink text-center">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleRule(rule)}
+                            className={`px-2 py-0.5 text-[10px] font-bold uppercase border-2 transition-all ${
+                              rule.active
+                                ? "bg-mint text-ink border-ink shadow-brutal-sm"
+                                : "bg-gray-200 text-gray-500 border-gray-400"
+                            }`}
+                          >
+                            {rule.active ? "ON" : "OFF"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
@@ -216,7 +293,7 @@ export default function ConstitutionPage() {
           type="button"
           onClick={handleSimulateImport}
           disabled={importing || !importText.trim()}
-          className="brutal-btn brutal-btn-yellow text-xs py-2 px-5 flex items-center gap-2 shadow-brutal-btn"
+          className="brutal-btn brutal-btn-yellow text-xs py-2.5 px-5 flex items-center justify-center gap-2 shadow-brutal-btn w-full sm:w-auto min-h-[44px]"
         >
           <Sparkles className="w-4 h-4" />
           <span>{importing ? "Parsing Guidelines..." : "Parse & Propose New Rules"}</span>

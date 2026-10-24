@@ -160,7 +160,7 @@ export default function InsightsPage() {
                     {r.override_rate} Overridden
                   </span>
                 </div>
-                <div className="flex justify-between text-[11px] text-gray-600">
+                <div className="flex flex-wrap justify-between items-center gap-1 text-[11px] text-gray-600">
                   <span>Total creator rejections: {r.overrides}</span>
                   <a href="/radar" className="font-bold underline text-ink">
                     Clarify in Health Radar →
@@ -209,9 +209,9 @@ export default function InsightsPage() {
 
           <div className="space-y-2 font-mono text-xs">
             {data.drift_by_category.map((w, idx) => (
-              <div key={idx} className="flex items-center justify-between p-2 border border-ink bg-cream">
+              <div key={idx} className="flex flex-wrap items-center justify-between gap-2 p-2 border border-ink bg-cream">
                 <span className="font-bold text-ink w-16">{w.week}</span>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                   <span className="text-[11px]">Terminology: <strong>{w.terminology}</strong></span>
                   <span className="text-[11px]">Claims: <strong>{w.claims}</strong></span>
                   <span className="text-[11px]">Tone: <strong>{w.tone}</strong></span>

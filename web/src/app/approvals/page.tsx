@@ -334,7 +334,7 @@ export default function ApprovalsPage() {
                   type="button"
                   onClick={() => handleReviewAction("changes")}
                   disabled={acting}
-                  className="brutal-btn brutal-btn-danger text-xs py-2.5 px-4 flex items-center justify-center gap-1.5"
+                  className="brutal-btn brutal-btn-danger text-xs py-2.5 px-4 flex items-center justify-center gap-1.5 min-h-[44px] w-full sm:w-auto"
                 >
                   <XCircle className="w-4 h-4" />
                   <span>Request Changes</span>
@@ -344,7 +344,7 @@ export default function ApprovalsPage() {
                   type="button"
                   onClick={() => handleReviewAction("approve")}
                   disabled={acting || selectedSub.status === "approved"}
-                  className="brutal-btn brutal-btn-mint text-xs py-2.5 px-6 flex items-center justify-center gap-1.5 shadow-brutal-btn"
+                  className="brutal-btn brutal-btn-mint text-xs py-2.5 px-6 flex items-center justify-center gap-1.5 shadow-brutal-btn min-h-[44px] w-full sm:w-auto"
                 >
                   <CheckCircle className="w-4 h-4" />
                   <span>

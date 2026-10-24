@@ -113,8 +113,8 @@ export default function RadarPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {unclearRules.map((item) => (
               <div key={item.rule_id} className="brutal-card p-6 bg-white space-y-4 border-danger">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="brutal-chip bg-yellow text-ink font-bold text-xs">
                       {item.rule_id}
                     </span>
@@ -165,7 +165,7 @@ export default function RadarPage() {
                     type="button"
                     onClick={() => handleApproveClarification(item.rule_id)}
                     disabled={actingRuleId === item.rule_id}
-                    className="brutal-btn brutal-btn-mint text-xs py-2 px-4 shadow-brutal-btn flex items-center gap-1.5"
+                    className="brutal-btn brutal-btn-mint text-xs py-2.5 px-4 shadow-brutal-btn flex items-center justify-center gap-1.5 min-h-[44px] w-full sm:w-auto"
                   >
                     <GitBranch className="w-3.5 h-3.5" />
                     <span>

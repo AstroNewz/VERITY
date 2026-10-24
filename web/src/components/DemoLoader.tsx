@@ -48,30 +48,30 @@ export default function DemoLoader({ onSelectPost, selectedPostId }: DemoLoaderP
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
           {/* Quick button for main demo post */}
           <button
             type="button"
             onClick={() => posts.length > 0 && onSelectPost(posts[0])}
-            className="brutal-btn brutal-btn-white text-xs py-1.5 px-3 border-2 flex items-center gap-1.5 font-bold"
+            className="brutal-btn brutal-btn-white text-xs py-2 sm:py-1.5 px-3 border-2 flex items-center justify-center gap-1.5 font-bold flex-1 sm:flex-initial"
           >
             <Zap className="w-3.5 h-3.5 fill-current" />
-            <span>Load Demo Post #1</span>
+            <span className="truncate">Load Demo #1</span>
           </button>
 
           {/* Dropdown for all 6 presets */}
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-initial">
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="brutal-btn brutal-btn-white text-xs py-1.5 px-3 border-2 flex items-center gap-2"
+              className="brutal-btn brutal-btn-white text-xs py-2 sm:py-1.5 px-3 border-2 flex items-center justify-between gap-2 w-full sm:w-auto"
             >
-              <span>{activePost ? activePost.title.slice(0, 18) + "..." : "All 6 Presets"}</span>
-              <ChevronDown className="w-3.5 h-3.5" />
+              <span className="truncate">{activePost ? activePost.title.slice(0, 16) + "..." : "All 6 Presets"}</span>
+              <ChevronDown className="w-3.5 h-3.5 shrink-0" />
             </button>
 
             {isOpen && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border-3 border-ink shadow-brutal-card z-50 p-2 space-y-1.5">
+              <div className="absolute right-0 sm:right-0 mt-2 max-w-[calc(100vw-2rem)] w-72 sm:w-96 bg-white border-3 border-ink shadow-brutal-card z-50 p-2 space-y-1.5">
                 <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-gray-500 px-2 py-1 border-b-2 border-gray-100">
                   Select Seeded Test Case:
                 </div>

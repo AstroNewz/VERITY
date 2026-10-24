@@ -134,7 +134,7 @@ export default function FindingCard({
       </div>
 
       {/* Actions Row */}
-      <div className="flex items-center justify-between pt-2 border-t-2 border-gray-100">
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t-2 border-gray-100">
         <div className="flex items-center gap-1">
           {finding.decision ? (
             <span
@@ -152,14 +152,14 @@ export default function FindingCard({
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               onDecision(finding.id, "reject");
             }}
-            className={`brutal-btn text-xs py-1 px-3 border-2 ${
+            className={`brutal-btn text-xs py-1.5 px-3 border-2 min-h-[38px] ${
               isRejected
                 ? "bg-ink text-white border-ink shadow-none"
                 : "brutal-btn-white hover:bg-danger hover:text-white"
@@ -175,7 +175,7 @@ export default function FindingCard({
               e.stopPropagation();
               onDecision(finding.id, "accept");
             }}
-            className={`brutal-btn text-xs py-1 px-3 border-2 ${
+            className={`brutal-btn text-xs py-1.5 px-3 border-2 min-h-[38px] ${
               isAccepted
                 ? "bg-mint text-ink border-ink shadow-none ring-2 ring-ink"
                 : "brutal-btn-mint"

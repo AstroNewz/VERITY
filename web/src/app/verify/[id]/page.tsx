@@ -161,14 +161,14 @@ export default function PassportVerifyPage() {
           </span>
         </div>
 
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
           {isValid ? (
-            <ShieldCheck className="w-12 h-12 text-ink stroke-[2.5]" />
+            <ShieldCheck className="w-9 h-9 sm:w-12 sm:h-12 text-ink stroke-[2.5]" />
           ) : (
-            <ShieldAlert className="w-12 h-12 text-white stroke-[2.5]" />
+            <ShieldAlert className="w-9 h-9 sm:w-12 sm:h-12 text-white stroke-[2.5]" />
           )}
           <h1
-            className={`text-3xl sm:text-5xl font-heading font-black uppercase tracking-tight ${
+            className={`text-2xl sm:text-4xl md:text-5xl font-heading font-black uppercase tracking-tight break-words ${
               isValid ? "text-ink" : "text-white"
             }`}
           >
@@ -196,7 +196,7 @@ export default function PassportVerifyPage() {
               Owner-Only Cryptographic Tamper Simulator
             </span>
           </div>
-          <span className="text-[10px] font-mono font-bold uppercase bg-ink text-white px-2 py-0.5">
+          <span className="text-[10px] font-mono font-bold uppercase bg-ink text-white px-2 py-0.5 self-start sm:self-auto">
             Audit Checklist #5
           </span>
         </div>
@@ -208,7 +208,7 @@ export default function PassportVerifyPage() {
             type="button"
             onClick={handleSimulateTamper}
             disabled={tampering}
-            className="brutal-btn brutal-btn-pink text-xs py-2 px-4 border-2 flex items-center gap-2 shadow-brutal-sm"
+            className="brutal-btn brutal-btn-pink text-xs py-2.5 px-4 border-2 flex items-center justify-center gap-2 shadow-brutal-sm min-h-[44px] w-full sm:w-auto"
           >
             <AlertTriangle className="w-4 h-4" />
             <span>{tampering ? "Tampering database..." : "Simulate Tamper (Owner Action)"}</span>
@@ -219,7 +219,7 @@ export default function PassportVerifyPage() {
               type="button"
               onClick={handleRestoreOriginal}
               disabled={restoring}
-              className="brutal-btn brutal-btn-mint text-xs py-2 px-4 border-2 flex items-center gap-2 shadow-brutal-sm"
+              className="brutal-btn brutal-btn-mint text-xs py-2.5 px-4 border-2 flex items-center justify-center gap-2 shadow-brutal-sm min-h-[44px] w-full sm:w-auto"
             >
               <RotateCcw className="w-4 h-4" />
               <span>{restoring ? "Restoring original..." : "Restore Approved Copy (Reset)"}</span>

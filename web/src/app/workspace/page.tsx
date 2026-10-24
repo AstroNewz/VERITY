@@ -246,7 +246,7 @@ export default function WorkspacePage() {
               </div>
 
               {/* Upload Dropzone button */}
-              <label className="brutal-btn brutal-btn-white text-xs py-1 px-3 border-2 cursor-pointer flex items-center gap-1.5 shadow-brutal-sm">
+              <label className="brutal-btn brutal-btn-white text-xs py-2 px-3 border-2 cursor-pointer flex items-center gap-1.5 shadow-brutal-sm min-h-[40px]">
                 <Upload className="w-3.5 h-3.5" />
                 <span>Upload Document</span>
                 <input
@@ -284,7 +284,7 @@ export default function WorkspacePage() {
                 placeholder="Paste promotional draft, student invitation, or campaign copy here..."
                 className="brutal-input font-sans text-sm leading-relaxed resize-y"
               />
-              <div className="flex justify-between items-center text-[10px] font-mono text-gray-500 mt-1 px-1">
+              <div className="flex flex-wrap justify-between items-center text-[10px] font-mono text-gray-500 mt-1 px-1 gap-1">
                 <span>{draftText.length} characters | {draftText.trim().split(/\s+/).filter(Boolean).length} words</span>
                 <span className="text-ink font-bold">Paste any format (TXT, DOCX, PPTX, PDF, Web)</span>
               </div>
@@ -295,7 +295,7 @@ export default function WorkspacePage() {
               type="button"
               onClick={handleRunAnalysis}
               disabled={analyzing || !draftText.trim()}
-              className="brutal-btn brutal-btn-yellow w-full text-sm py-3.5 shadow-brutal-btn flex items-center justify-center gap-2"
+              className="brutal-btn brutal-btn-yellow w-full text-sm py-3.5 min-h-[48px] shadow-brutal-btn flex items-center justify-center gap-2"
             >
               <Play className={`w-4 h-4 fill-ink ${analyzing ? "animate-spin" : ""}`} />
               <span>
@@ -367,7 +367,7 @@ export default function WorkspacePage() {
                   type="button"
                   onClick={handleSubmitForReview}
                   disabled={submitting || submission.status === "pending_approval"}
-                  className="brutal-btn brutal-btn-mint text-xs py-2 px-5 flex items-center justify-center gap-2 shadow-brutal-btn"
+                  className="brutal-btn brutal-btn-mint text-xs py-2.5 px-5 min-h-[44px] flex items-center justify-center gap-2 shadow-brutal-btn w-full sm:w-auto"
                 >
                   <Send className="w-4 h-4" />
                   <span>
@@ -383,7 +383,7 @@ export default function WorkspacePage() {
 
         {/* Right Column: Findings Panel (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="brutal-card p-4 bg-white sticky top-24">
+          <div className="brutal-card p-4 bg-white lg:sticky lg:top-24">
             {/* Header with stats */}
             <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b-2 border-ink">
               <div>
@@ -404,7 +404,7 @@ export default function WorkspacePage() {
                 <button
                   type="button"
                   onClick={handleAcceptAllSafe}
-                  className="brutal-btn brutal-btn-mint text-[10px] py-1 px-2 border-2 shadow-brutal-sm"
+                  className="brutal-btn brutal-btn-mint text-xs py-1.5 px-3 min-h-[36px] border-2 shadow-brutal-sm"
                   title="Accept all safe suggestions"
                 >
                   Accept All
@@ -414,7 +414,7 @@ export default function WorkspacePage() {
 
             {/* Filter Pills */}
             {findings.length > 0 && (
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 text-xs font-mono">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 text-xs font-mono scrollbar-none touch-pan-x">
                 {[
                   { id: "all", label: `All (${findings.length})` },
                   { id: "critical", label: `Critical (${findings.filter((f) => f.severity === "critical").length})` },

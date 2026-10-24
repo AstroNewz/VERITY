@@ -84,48 +84,85 @@ export default function AILogsPage() {
             No external AI calls logged yet. Run a governance review with confidential terms to see logs appear.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left font-mono text-xs border-collapse">
-              <thead>
-                <tr className="bg-ink text-white">
-                  <th className="p-3 border-2 border-ink uppercase">Log ID</th>
-                  <th className="p-3 border-2 border-ink uppercase">Timestamp</th>
-                  <th className="p-3 border-2 border-ink uppercase">AI Model</th>
-                  <th className="p-3 border-2 border-ink uppercase">Purpose</th>
-                  <th className="p-3 border-2 border-ink uppercase">Tokens Redacted</th>
-                </tr>
-              </thead>
-              <tbody>
-                {logs.map((log) => (
-                  <tr key={log.id} className="border-b-2 border-ink hover:bg-cream transition-colors">
-                    <td className="p-3 border-2 border-ink font-bold text-ink">
+          <>
+            {/* Mobile Card List (< lg) */}
+            <div className="block lg:hidden space-y-3">
+              {logs.map((log) => (
+                <div key={log.id} className="brutal-card p-4 space-y-3 bg-white">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-ink/20 pb-2">
+                    <span className="font-mono font-bold text-xs bg-yellow px-2 py-0.5 border border-ink">
                       {log.id}
-                    </td>
-                    <td className="p-3 border-2 border-ink text-gray-600">
+                    </span>
+                    <span
+                      className={`brutal-chip text-[9px] py-0 px-2 ${
+                        log.redactions_count > 0 ? "bg-mint text-ink font-bold" : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {log.redactions_count} REDACTION{log.redactions_count === 1 ? "" : "S"}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="font-heading font-black text-xs text-ink block mb-0.5">PURPOSE:</span>
+                    <p className="font-sans text-xs text-ink">{log.purpose}</p>
+                  </div>
+
+                  <div className="pt-2 border-t border-ink/10 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
+                    <span className="brutal-chip bg-yellow text-ink text-[10px] border border-ink">
+                      {log.model}
+                    </span>
+                    <span className="text-gray-600 text-[10px]">
                       {new Date(log.created_at).toLocaleString()}
-                    </td>
-                    <td className="p-3 border-2 border-ink font-semibold">
-                      <span className="brutal-chip bg-yellow text-ink text-[10px]">
-                        {log.model}
-                      </span>
-                    </td>
-                    <td className="p-3 border-2 border-ink font-sans text-xs">
-                      {log.purpose}
-                    </td>
-                    <td className="p-3 border-2 border-ink">
-                      <span
-                        className={`brutal-chip text-[10px] ${
-                          log.redactions_count > 0 ? "bg-mint text-ink font-bold" : "bg-gray-100 text-gray-600"
-                        }`}
-                      >
-                        {log.redactions_count} Redactions
-                      </span>
-                    </td>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table View (>= lg) */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs border-collapse">
+                <thead>
+                  <tr className="bg-ink text-white">
+                    <th className="p-3 border-2 border-ink uppercase">Log ID</th>
+                    <th className="p-3 border-2 border-ink uppercase">Timestamp</th>
+                    <th className="p-3 border-2 border-ink uppercase">AI Model</th>
+                    <th className="p-3 border-2 border-ink uppercase">Purpose</th>
+                    <th className="p-3 border-2 border-ink uppercase">Tokens Redacted</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {logs.map((log) => (
+                    <tr key={log.id} className="border-b-2 border-ink hover:bg-cream transition-colors">
+                      <td className="p-3 border-2 border-ink font-bold text-ink">
+                        {log.id}
+                      </td>
+                      <td className="p-3 border-2 border-ink text-gray-600">
+                        {new Date(log.created_at).toLocaleString()}
+                      </td>
+                      <td className="p-3 border-2 border-ink font-semibold">
+                        <span className="brutal-chip bg-yellow text-ink text-[10px]">
+                          {log.model}
+                        </span>
+                      </td>
+                      <td className="p-3 border-2 border-ink font-sans text-xs">
+                        {log.purpose}
+                      </td>
+                      <td className="p-3 border-2 border-ink">
+                        <span
+                          className={`brutal-chip text-[10px] ${
+                            log.redactions_count > 0 ? "bg-mint text-ink font-bold" : "bg-gray-100 text-gray-600"
+                          }`}
+                        >
+                          {log.redactions_count} Redactions
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>

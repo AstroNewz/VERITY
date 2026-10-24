@@ -22,6 +22,13 @@ export const metadata = {
   description: "Verity reviews content before publication. Every finding names the rule or approved source it breaks, explains why, and suggests a fix that keeps the creator's intent. Humans always make the final call.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#FFD93D",
+};
+
 export default function RootLayout({
   children,
 }: {

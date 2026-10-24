@@ -161,41 +161,23 @@ export default function LedgerPage() {
             Loading claim records...
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left font-mono text-xs border-collapse">
-              <thead>
-                <tr className="bg-ink text-white">
-                  <th className="p-3 border-2 border-ink uppercase">ID</th>
-                  <th className="p-3 border-2 border-ink uppercase">Approved Claim Text</th>
-                  <th className="p-3 border-2 border-ink uppercase">Substantiation Source</th>
-                  <th className="p-3 border-2 border-ink uppercase">Owner Desk</th>
-                  <th className="p-3 border-2 border-ink uppercase">Valid Until</th>
-                  <th className="p-3 border-2 border-ink uppercase">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {claims.map((c) => {
-                  const isExp = c.status === "expired";
-                  const isSoon = c.status === "expires_soon";
+          <>
+            {/* Mobile Card List (< lg) */}
+            <div className="block lg:hidden space-y-3">
+              {claims.map((c) => {
+                const isExp = c.status === "expired";
+                const isSoon = c.status === "expires_soon";
 
-                  return (
-                    <tr key={c.id} className="border-b-2 border-ink hover:bg-cream transition-colors">
-                      <td className="p-3 border-2 border-ink font-bold text-sm bg-yellow-light/40">
-                        {c.id}
-                      </td>
-                      <td className="p-3 border-2 border-ink font-sans font-bold text-xs">
-                        "{c.claim_text}"
-                      </td>
-                      <td className="p-3 border-2 border-ink text-gray-700">
-                        {c.source}
-                      </td>
-                      <td className="p-3 border-2 border-ink font-semibold">
-                        {c.owner}
-                      </td>
-                      <td className="p-3 border-2 border-ink">
-                        {new Date(c.valid_until).toLocaleDateString()}
-                      </td>
-                      <td className="p-3 border-2 border-ink">
+                return (
+                  <div
+                    key={c.id}
+                    className="brutal-card p-4 space-y-3 bg-white"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-ink/20 pb-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono font-bold text-xs bg-yellow px-2 py-0.5 border border-ink">
+                          {c.id}
+                        </span>
                         <span
                           className={`brutal-chip text-[9px] py-0 px-2 ${
                             isExp
@@ -207,13 +189,86 @@ export default function LedgerPage() {
                         >
                           {c.status.replace("_", " ").toUpperCase()}
                         </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                      <span className="text-[11px] font-mono text-gray-600">
+                        Valid Until: <strong className="text-ink">{new Date(c.valid_until).toLocaleDateString()}</strong>
+                      </span>
+                    </div>
+
+                    <p className="font-sans font-bold text-sm text-ink leading-snug">
+                      "{c.claim_text}"
+                    </p>
+
+                    <div className="pt-2 border-t border-ink/10 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
+                      <div>
+                        <span className="font-bold uppercase text-[9px] block text-gray-500">Substantiation:</span>
+                        <span className="text-ink break-words">{c.source}</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-bold uppercase text-[9px] block text-gray-500">Owner Desk:</span>
+                        <span className="font-semibold text-ink">{c.owner}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table View (>= lg) */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs border-collapse">
+                <thead>
+                  <tr className="bg-ink text-white">
+                    <th className="p-3 border-2 border-ink uppercase">ID</th>
+                    <th className="p-3 border-2 border-ink uppercase">Approved Claim Text</th>
+                    <th className="p-3 border-2 border-ink uppercase">Substantiation Source</th>
+                    <th className="p-3 border-2 border-ink uppercase">Owner Desk</th>
+                    <th className="p-3 border-2 border-ink uppercase">Valid Until</th>
+                    <th className="p-3 border-2 border-ink uppercase">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {claims.map((c) => {
+                    const isExp = c.status === "expired";
+                    const isSoon = c.status === "expires_soon";
+
+                    return (
+                      <tr key={c.id} className="border-b-2 border-ink hover:bg-cream transition-colors">
+                        <td className="p-3 border-2 border-ink font-bold text-sm bg-yellow-light/40">
+                          {c.id}
+                        </td>
+                        <td className="p-3 border-2 border-ink font-sans font-bold text-xs">
+                          "{c.claim_text}"
+                        </td>
+                        <td className="p-3 border-2 border-ink text-gray-700">
+                          {c.source}
+                        </td>
+                        <td className="p-3 border-2 border-ink font-semibold">
+                          {c.owner}
+                        </td>
+                        <td className="p-3 border-2 border-ink">
+                          {new Date(c.valid_until).toLocaleDateString()}
+                        </td>
+                        <td className="p-3 border-2 border-ink">
+                          <span
+                            className={`brutal-chip text-[9px] py-0 px-2 ${
+                              isExp
+                                ? "bg-danger text-white border-ink"
+                                : isSoon
+                                ? "bg-yellow text-ink border-ink font-bold"
+                                : "bg-mint text-ink border-ink"
+                            }`}
+                          >
+                            {c.status.replace("_", " ").toUpperCase()}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
@@ -247,14 +302,14 @@ export default function LedgerPage() {
 
       {/* Add Claim Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-ink/70 flex items-center justify-center p-4 z-50">
-          <div className="brutal-card p-6 bg-white max-w-md w-full space-y-4 shadow-brutal-xl">
+        <div className="fixed inset-0 bg-ink/70 flex items-center justify-center p-3 sm:p-4 z-50 overflow-y-auto">
+          <div className="brutal-card p-5 sm:p-6 bg-white max-w-md w-full max-w-[calc(100vw-2rem)] my-auto space-y-4 shadow-brutal-xl">
             <div className="flex items-center justify-between pb-2 border-b-2 border-ink">
-              <h3 className="font-heading font-black text-lg uppercase">Add New Claim Entry</h3>
+              <h3 className="font-heading font-black text-base sm:text-lg uppercase">Add New Claim Entry</h3>
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="p-1 hover:bg-gray-100 border border-transparent hover:border-ink"
+                className="p-2 hover:bg-gray-100 border border-transparent hover:border-ink min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5 stroke-[2.5]" />
@@ -320,17 +375,17 @@ export default function LedgerPage() {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t-2 border-ink">
+              <div className="flex flex-wrap items-center justify-end gap-2 pt-3 border-t-2 border-ink">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="brutal-btn brutal-btn-white text-xs py-1.5 px-3 border-2"
+                  className="brutal-btn brutal-btn-white text-xs py-2 px-4 border-2 min-h-[44px] flex-1 sm:flex-initial"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="brutal-btn brutal-btn-yellow text-xs py-1.5 px-4 shadow-brutal-btn"
+                  className="brutal-btn brutal-btn-yellow text-xs py-2 px-5 shadow-brutal-btn min-h-[44px] flex-1 sm:flex-initial"
                 >
                   Save Entry
                 </button>
