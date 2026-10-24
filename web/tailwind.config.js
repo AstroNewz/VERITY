@@ -44,9 +44,9 @@ module.exports = {
         '3': '3px',
       },
       fontFamily: {
-        heading: ['var(--font-fraunces)', 'serif'],
-        body: ['var(--font-space-grotesk)', 'sans-serif'],
-        mono: ['var(--font-space-mono)', 'monospace'],
+        heading: ['var(--font-plus-jakarta)', 'sans-serif'],
+        body: ['var(--font-plus-jakarta)', 'sans-serif'],
+        mono: ['var(--font-jetbrains-mono)', 'monospace'],
       }
     },
   },
