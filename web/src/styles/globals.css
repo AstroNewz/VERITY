@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-cream: #FFFBEF;
+  --color-ink: #111111;
+  --color-yellow: #FFD93D;
+  --color-pink: #FF9EDB;
+  --color-mint: #6EE7B7;
+  --color-periwinkle: #9DB0FF;
+  --color-danger: #E5484D;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-space-grotesk), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Accessibility focus indicator */
+*:focus-visible {
+  outline: 3px solid #111111 !important;
+  outline-offset: 3px !important;
+}
+
+/* Neo-Brutalist Utility Classes */
+@layer components {
+  .brutal-card {
+    background-color: #FFFFFF;
+    border: 3px solid #111111;
+    box-shadow: 6px 6px 0 #111111;
+    transition: all 0.15s ease-in-out;
+  }
+
+  .brutal-card-cream {
+    background-color: #FFFBEF;
+    border: 3px solid #111111;
+    box-shadow: 6px 6px 0 #111111;
+    transition: all 0.15s ease-in-out;
+  }
+
+  .brutal-card-hover:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 #111111;
+  }
+
+  .brutal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: var(--font-space-mono), monospace;
+    font-size: 0.875rem;
+    padding: 0.75rem 1.25rem;
+    border: 3px solid #111111;
+    box-shadow: 4px 4px 0 #111111;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .brutal-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #111111;
+  }
+
+  .brutal-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 #111111;
+  }
+
+  .brutal-btn-yellow {
+    background-color: #FFD93D;
+    color: #111111;
+  }
+  .brutal-btn-yellow:hover {
+    background-color: #FACC15;
+  }
+
+  .brutal-btn-mint {
+    background-color: #6EE7B7;
+    color: #111111;
+  }
+  .brutal-btn-mint:hover {
+    background-color: #34D399;
+  }
+
+  .brutal-btn-pink {
+    background-color: #FF9EDB;
+    color: #111111;
+  }
+  .brutal-btn-pink:hover {
+    background-color: #F472B6;
+  }
+
+  .brutal-btn-danger {
+    background-color: #E5484D;
+    color: #FFFFFF;
+  }
+  .brutal-btn-danger:hover {
+    background-color: #DC2626;
+  }
+
+  .brutal-btn-white {
+    background-color: #FFFFFF;
+    color: #111111;
+  }
+  .brutal-btn-white:hover {
+    background-color: #F3F4F6;
+  }
+
+  .brutal-badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-space-mono), monospace;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.65rem;
+    border: 2px solid #111111;
+    box-shadow: 3px 3px 0 #111111;
+  }
+
+  .brutal-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.5rem;
+    font-family: var(--font-space-mono), monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 2px solid #111111;
+    border-radius: 4px;
+  }
+
+  .brutal-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: #FFFFFF;
+    color: #111111;
+    font-size: 1rem;
+    border: 3px solid #111111;
+    box-shadow: 4px 4px 0 #111111;
+    transition: all 0.1s ease;
+  }
+  .brutal-input:focus {
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0 #111111;
+  }
+
+  .marker-highlight {
+    background-color: #FFD93D;
+    padding: 0.1rem 0.35rem;
+    font-weight: 700;
+    border-bottom: 2px solid #111111;
+  }
+
+  .marker-danger {
+    background-color: #FFE5E5;
+    color: #E5484D;
+    padding: 0.1rem 0.35rem;
+    font-weight: 700;
+    border-bottom: 2px solid #E5484D;
+  }
+
+  .checker-divider {
+    background-image: linear-gradient(45deg, #111 25%, transparent 25%), 
+                      linear-gradient(-45deg, #111 25%, transparent 25%), 
+                      linear-gradient(45deg, transparent 75%, #111 75%), 
+                      linear-gradient(-45deg, transparent 75%, #111 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    height: 12px;
+    width: 100%;
+    opacity: 0.85;
+  }
+
+  .stripe-divider {
+    background: repeating-linear-gradient(
+      -45deg,
+      #111111,
+      #111111 10px,
+      #FFD93D 10px,
+      #FFD93D 20px
+    );
+    height: 12px;
+    width: 100%;
+    border-top: 2px solid #111111;
+    border-bottom: 2px solid #111111;
+  }
+}
