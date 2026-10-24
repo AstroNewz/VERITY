@@ -32,11 +32,15 @@ def review_with_claude(
     token_map: Dict[str, str]
 ) -> Tuple[List[Dict[str, Any]], bool, str]:
     """
-    Calls Anthropic Claude to review brand voice & tone.
-    Returns: (findings_list, ai_used_bool, ai_model_str)
+    Brand Voice & Tone Reviewer:
+    Uses Groq API by default with fallback to Anthropic Claude or deterministic mode.
     """
+    from app.engine.groq_reviewer import review_with_groq
+    if settings.GROQ_API_KEY:
+        return review_with_groq(sanitized_text, original_text, token_map)
+
     if not settings.ANTHROPIC_API_KEY:
-        logger.info("ANTHROPIC_API_KEY not configured. Falling back to deterministic review.")
+        logger.info("Neither GROQ_API_KEY nor ANTHROPIC_API_KEY configured. Falling back to deterministic review.")
         return [], False, "offline_fallback"
 
     try:

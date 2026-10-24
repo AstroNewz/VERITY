@@ -77,7 +77,7 @@ export default function FindingCard({
             {finding.origin === "ai" ? (
               <>
                 <Sparkles className="w-2.5 h-2.5 text-pink-500" />
-                CLAUDE AI
+                GROQ AI
               </>
             ) : (
               <>

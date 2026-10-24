@@ -225,7 +225,7 @@ def analyze_submission(
 
     ai_findings = []
     ai_used = False
-    ai_model = settings.CLAUDE_MODEL
+    ai_model = settings.GROQ_MODEL if settings.GROQ_API_KEY else settings.CLAUDE_MODEL
     ai_status = "offline_fallback"
     ai_notice = None
 
@@ -233,7 +233,7 @@ def analyze_submission(
         ai_status = "daily_cap_exceeded"
         ai_notice = "AI review paused for today (Daily Cap Exceeded). Running deterministic checks."
     else:
-        # 5. Claude Brand Voice Review
+        # 5. Groq / LLM Brand Voice Review
         ai_findings, ai_used, ai_model = review_with_claude(sanitized_text, text, token_map)
         findings_raw.extend(ai_findings)
         if ai_used:
@@ -241,7 +241,7 @@ def analyze_submission(
             ai_notice = None
         else:
             ai_status = "offline_fallback"
-            ai_notice = "AI review paused: No Anthropic API key configured. Deterministic rules & Claim Ledger are active."
+            ai_notice = "AI review paused: No Groq API key configured. Deterministic rules & Claim Ledger are active."
 
     # 6. Log AI usage and Privacy redactions
     if ai_used or redactions_count > 0:
@@ -394,7 +394,7 @@ def review_submission(
             submission=sub,
             approver=current_user,
             ai_used=any(f.origin == "ai" for f in (sub.findings or [])),
-            ai_model="claude-3-5-sonnet",
+            ai_model=sub.ai_model or settings.GROQ_MODEL,
             redactions_count=0,
             db=db
         )

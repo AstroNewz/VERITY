@@ -313,7 +313,7 @@ export default function PassportVerifyPage() {
               AI Disclosure
             </span>
             <span className="font-bold text-ink">
-              {verification.passport?.ai_used ? "Claude 3.5 Sonnet" : "Deterministic Only"}
+              {verification.passport?.ai_used ? (verification.passport?.ai_model || "Groq Llama 3.3 70B") : "Deterministic Only"}
             </span>
           </div>
 

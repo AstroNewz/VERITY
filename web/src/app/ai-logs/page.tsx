@@ -50,7 +50,7 @@ export default function AILogsPage() {
         </div>
 
         <p className="text-xs font-mono text-gray-700 leading-relaxed">
-          Before user content is sent to Anthropic Claude, Verity strips out emails, phone numbers, and confidential codenames (like <strong>Project Falcon</strong>), replacing them with synthetic tokens (`[REDACTED-CONFIDENTIAL-1]`). The mapping is preserved securely in memory to restore original phrases in suggested fixes.
+          Before user content is sent to Groq AI, Verity strips out emails, phone numbers, and confidential codenames (like <strong>Project Falcon</strong>), replacing them with synthetic tokens (`[REDACTED-CONFIDENTIAL-1]`). The mapping is preserved securely in memory to restore original phrases in suggested fixes.
         </p>
 
         <div className="flex flex-wrap gap-2 pt-1 font-mono text-xs">

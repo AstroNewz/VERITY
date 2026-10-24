@@ -55,7 +55,7 @@ export default function WorkspacePage() {
   const handleRunAnalysis = async () => {
     if (!draftText.trim()) return;
     setAnalyzing(true);
-    setStatusMessage("Running Verity Governance Checks: Terminology, Claims Ledger, Privacy Gateway & Claude AI...");
+    setStatusMessage("Running Verity Governance Checks: Terminology, Claims Ledger, Privacy Gateway & Groq AI...");
     try {
       // 1. Create or update submission
       const sub = await api.submissions.create({
@@ -198,10 +198,10 @@ export default function WorkspacePage() {
             </span>
             <span>
               {submission.ai_status === "active"
-                ? `Claude AI Active (${submission.ai_model || "Claude 3.5 Sonnet"}): Multi-agent intent preservation & voice tone checks enabled.`
+                ? `Groq AI Active (${submission.ai_model || "Llama 3.3 70B"}): Multi-agent intent preservation & voice tone checks enabled.`
                 : submission.ai_status === "daily_cap_exceeded"
                 ? `AI review paused for today: Global daily quota reached. Gracefully operating in 100% deterministic rule citation & ledger verification mode.`
-                : `Demo Notice: Deterministic Engine Active. Anthropic key offline. Deterministic rules, Privacy Gateway, and Claim Ledger are operating with full fidelity.`}
+                : `Demo Notice: Deterministic Engine Active. Groq API key offline. Deterministic rules, Privacy Gateway, and Claim Ledger are operating with full fidelity.`}
             </span>
           </div>
           <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 border border-ink bg-white text-ink font-mono font-black shrink-0">
