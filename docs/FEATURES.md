@@ -29,7 +29,7 @@
   - Automatically extracts creator purpose: goal, target audience, core message, and key phrases.
   - Continuously validates suggested fixes against original intent, tagging copy as `INTENT PRESERVED` or `INTENT AT RISK`.
 - **Privacy Gateway**:
-  - Tokenizes sensitive entities (`[REDACTED-CONFIDENTIAL-1]`) prior to Claude calls.
+  - Tokenizes sensitive entities (`[REDACTED-CONFIDENTIAL-1]`) prior to external Groq LLM calls.
   - Restores tokens in suggested fixes so creators receive clear copy.
   - Logs model and redaction counts into `ai_usage_log`.
 - **Publish Passport™**:
@@ -47,11 +47,11 @@
 1. **Claim Matching Algorithm (Lexical vs Semantic)**:
    - Claim matching currently uses regex candidate pattern matching and multi-token lexical overlap against the Claim Ledger database. It does **not** use vector embeddings or cosine similarity. Truthfully reported as deterministic lexical matching, not semantic embeddings.
 2. **Visual Review Scope (Mathematical vs Computer Vision)**:
-   - Visual governance is strictly based on mathematical WCAG 2.1 AA luminance contrast calculations on color codes (Rule `A-1`) and alt-text markdown validation (Rule `A-2`). Verity does **not** transmit raster image pixels to Claude Vision or run multimodal image segmentation.
+   - Visual governance is strictly based on mathematical WCAG 2.1 AA luminance contrast calculations on color codes (Rule `A-1`) and alt-text markdown validation (Rule `A-2`). Verity does **not** transmit raster image pixels to vision models or run multimodal image segmentation.
 3. **Multi-Tenant Session Sandboxing**:
    - Each judge browser receives an isolated organization sandbox (`org_{session_id}`) seeded on-demand via `X-Session-ID`. Resetting demo data impacts only the caller's organization.
 4. **AI Availability & Rate Caps**:
-   - When running without an `ANTHROPIC_API_KEY` or when the `AI_DAILY_CAP` is reached, Claude brand voice review pauses and the app degrades gracefully to deterministic checks with a visible notice badge.
+   - When running without a `GROQ_API_KEY` or when the `AI_DAILY_CAP` is reached, Groq AI brand voice review pauses and the app degrades gracefully to deterministic checks with a visible notice badge.
 5. **Document Ingestion Limits**:
    - In-memory document parsing for `.docx`, `.pptx`, `.pdf`, `.txt`, and `.md` does not store files on disk. Payload sizes are strictly capped at 10 MB. Files exceeding 10 MB or with unsupported extensions are rejected with HTTP 413 and 400.
 

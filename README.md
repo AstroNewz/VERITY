@@ -18,9 +18,10 @@ BRAND GOVERNANCE PLATFORM // CODEAXIS ROUND 2
 ### 🏷️ SYSTEM TELEMETRY & AUDIT STATUS
 
 [![Aesthetic](https://img.shields.io/badge/DESIGN-NEO--BRUTALIST-FFE500?style=for-the-badge&logoColor=111111&labelColor=111111)](https://github.com/AstroNewz/VERITY)
-[![AI Engine](https://img.shields.io/badge/AI_ENGINE-GROQ_LLAMA_3.3_70B-FF3366?style=for-the-badge&logoColor=white&labelColor=111111)](https://console.groq.com)
+[![AI Engine](https://img.shields.io/badge/AI_ENGINE-GROQ_120B_OSS-FF3366?style=for-the-badge&logoColor=white&labelColor=111111)](https://console.groq.com)
 [![Precision](https://img.shields.io/badge/DUAL--SET_PRECISION-100%25_CLEAN-00FF66?style=for-the-badge&logoColor=111111&labelColor=111111)](https://github.com/AstroNewz/VERITY)
 [![Pytest](https://img.shields.io/badge/PYTEST_SUITE-12%2F12_PASSING-00F0FF?style=for-the-badge&logoColor=111111&labelColor=111111)](https://github.com/AstroNewz/VERITY)
+[![Project PDF](https://img.shields.io/badge/DELIVERABLE-SUBMISSION_PDF-FFE500?style=for-the-badge&logoColor=111111&labelColor=111111)](Verity_Round2_Submission_Report.pdf)
 [![Team](https://img.shields.io/badge/TEAM-BRAKET-FFE500?style=for-the-badge&logoColor=111111&labelColor=111111)](https://github.com/AstroNewz/VERITY)
 
 ---
@@ -56,6 +57,7 @@ Traditional AI linters and grammar checkers produce vague, subjective complaints
 | **Backend API** | Render (FastAPI Docker) | [https://verity-api.onrender.com](https://verity-api.onrender.com) | **ONLINE** |
 | **Health Ping** | HTTP GET | [https://verity-api.onrender.com/health](https://verity-api.onrender.com/health) | `{"status":"healthy"}` |
 | **Git Monorepo** | GitHub Public | [https://github.com/AstroNewz/VERITY.git](https://github.com/AstroNewz/VERITY.git) | **SYNCED** |
+| **Submission PDF**| Project Report | [Verity_Round2_Submission_Report.pdf](Verity_Round2_Submission_Report.pdf) | **READY** |
 
 > **COLD-START RESILIENCE:** Render free instances spin down when inactive. The web frontend includes a live cold-start indicator (`"Waking the server, this can take up to a minute"`) and pings `/health` every 10 minutes to maintain persistent availability.
 
