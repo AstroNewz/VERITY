@@ -38,6 +38,7 @@ app.add_middleware(
 )
 
 # Health endpoints
+@app.get("/", tags=["Health"])
 @app.get("/health", tags=["Health"])
 @app.get("/api/v1/health", tags=["Health"])
 def health_check():
