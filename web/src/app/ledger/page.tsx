@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/authContext";
 import { api } from "@/lib/api";
 import { ClaimLedgerItem, ConfidentialTerm } from "@/lib/types";
+import { useTour } from "@/components/InteractiveTour";
 import { 
   Scale, 
   Calendar, 
@@ -14,11 +15,13 @@ import {
   ShieldAlert, 
   Lock,
   ArrowRight,
-  X
+  X,
+  Compass
 } from "lucide-react";
 
 export default function LedgerPage() {
   const { user, role, loginAsRole } = useAuth();
+  const { startTour } = useTour();
   const [claims, setClaims] = useState<ClaimLedgerItem[]>([]);
   const [confTerms, setConfTerms] = useState<ConfidentialTerm[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,8 +102,25 @@ export default function LedgerPage() {
         </button>
       </div>
 
+      {/* Contextual Brand Owner Tour Assistant Banner */}
+      <div className="p-3 bg-mint border-3 border-ink shadow-brutal-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+        <div className="flex items-center gap-2">
+          <Compass className="w-4 h-4 text-ink stroke-[2.5]" />
+          <span className="font-bold text-ink">
+            CLAIM LEDGER WALKTHROUGH: Track 30-day expiry watches, substantiated metrics, and secret codename guards.
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => startTour("owner")}
+          className="brutal-btn brutal-btn-white text-[11px] py-1 px-3 border-2 font-bold uppercase hover:bg-ink hover:text-white transition-colors shrink-0 self-start sm:self-auto"
+        >
+          ▶ Start Owner Tour (8 Steps)
+        </button>
+      </div>
+
       {/* 30-Day Expiry Calendar Strip */}
-      <div className="brutal-card p-5 bg-white space-y-3">
+      <div id="tour-expiry-strip" className="brutal-card p-5 bg-white space-y-3">
         <div className="flex items-center gap-2 pb-2 border-b-2 border-ink">
           <Calendar className="w-5 h-5 text-ink stroke-[2.5]" />
           <h2 className="font-heading font-black text-sm uppercase">
@@ -146,7 +166,7 @@ export default function LedgerPage() {
       </div>
 
       {/* Main Claims Table */}
-      <div className="brutal-card p-6 bg-white space-y-4">
+      <div id="tour-claims-table" className="brutal-card p-6 bg-white space-y-4">
         <div className="flex items-center justify-between pb-2 border-b-2 border-ink">
           <h2 className="font-heading font-black text-lg uppercase">
             Approved Claims Database ({claims.length})
@@ -273,7 +293,7 @@ export default function LedgerPage() {
       </div>
 
       {/* Confidential Terms Table */}
-      <div className="brutal-card p-6 bg-white space-y-4">
+      <div id="tour-confidential-terms" className="brutal-card p-6 bg-white space-y-4">
         <div className="flex items-center gap-2 pb-2 border-b-2 border-ink">
           <Lock className="w-5 h-5 text-ink stroke-[2.5]" />
           <h2 className="font-heading font-black text-lg uppercase">

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/authContext";
 import { api } from "@/lib/api";
 import { Rule } from "@/lib/types";
+import { useTour } from "@/components/InteractiveTour";
 import { 
   BookOpen, 
   Plus, 
@@ -14,11 +15,13 @@ import {
   ShieldCheck, 
   Sparkles,
   ToggleLeft,
-  ToggleRight
+  ToggleRight,
+  Compass
 } from "lucide-react";
 
 export default function ConstitutionPage() {
   const { user, role, loginAsRole } = useAuth();
+  const { startTour } = useTour();
   const [rules, setRules] = useState<Rule[]>([]);
   const [loading, setLoading] = useState(true);
   const [importText, setImportText] = useState("");
@@ -88,8 +91,25 @@ export default function ConstitutionPage() {
         )}
       </div>
 
+      {/* Contextual Brand Owner Tour Assistant Banner */}
+      <div className="p-3 bg-pink border-3 border-ink shadow-brutal-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+        <div className="flex items-center gap-2">
+          <Compass className="w-4 h-4 text-ink stroke-[2.5]" />
+          <span className="font-bold text-ink">
+            BRAND OWNER WALKTHROUGH: Manage constitution rules, live toggles, AI guideline parsing, and Claim Ledger.
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => startTour("owner")}
+          className="brutal-btn brutal-btn-white text-[11px] py-1 px-3 border-2 font-bold uppercase hover:bg-ink hover:text-white transition-colors shrink-0 self-start sm:self-auto"
+        >
+          ▶ Start Owner Tour (8 Steps)
+        </button>
+      </div>
+
       {/* Rules Table */}
-      <div className="brutal-card p-6 bg-white space-y-4">
+      <div id="tour-rules-list" className="brutal-card p-6 bg-white space-y-4">
         <div className="flex items-center justify-between pb-2 border-b-2 border-ink">
           <h2 className="font-heading font-black text-lg uppercase">
             Active Brand Rules ({rules.length})
@@ -262,7 +282,7 @@ export default function ConstitutionPage() {
       </div>
 
       {/* Import Guidelines Section */}
-      <div className="brutal-card p-6 bg-white space-y-4">
+      <div id="tour-import-guidelines" className="brutal-card p-6 bg-white space-y-4">
         <div className="flex items-center gap-2 pb-2 border-b-2 border-ink">
           <Upload className="w-5 h-5 text-ink stroke-[2.5]" />
           <h2 className="font-heading font-black text-lg uppercase">

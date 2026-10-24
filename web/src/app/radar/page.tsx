@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/authContext";
 import { api } from "@/lib/api";
 import { HealthRadarItem } from "@/lib/types";
+import { useTour } from "@/components/InteractiveTour";
 import { 
   Activity, 
   AlertTriangle, 
@@ -14,11 +15,13 @@ import {
   RefreshCw,
   GitBranch,
   Check,
-  X
+  X,
+  Compass
 } from "lucide-react";
 
 export default function RadarPage() {
   const { user, role, loginAsRole } = useAuth();
+  const { startTour } = useTour();
   const [radarItems, setRadarItems] = useState<HealthRadarItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [actingRuleId, setActingRuleId] = useState<string | null>(null);
@@ -83,6 +86,23 @@ export default function RadarPage() {
         )}
       </div>
 
+      {/* Contextual Brand Owner Tour Assistant Banner */}
+      <div className="p-3 bg-pink border-3 border-ink shadow-brutal-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+        <div className="flex items-center gap-2">
+          <Compass className="w-4 h-4 text-ink stroke-[2.5]" />
+          <span className="font-bold text-ink">
+            HEALTH RADAR WALKTHROUGH: Identify ambiguous rules with high creator rejection rates and auto-generate clarified clauses.
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => startTour("owner")}
+          className="brutal-btn brutal-btn-white text-[11px] py-1 px-3 border-2 font-bold uppercase hover:bg-ink hover:text-white transition-colors shrink-0 self-start sm:self-auto"
+        >
+          ▶ Start Owner Tour (8 Steps)
+        </button>
+      </div>
+
       {notice && (
         <div className="p-3 bg-mint-light border-2 border-mint-dark text-xs font-mono font-bold flex items-center justify-between">
           <span>{notice}</span>
@@ -93,7 +113,7 @@ export default function RadarPage() {
       )}
 
       {/* Unclear Rules Section */}
-      <div className="space-y-4">
+      <div id="tour-flagged-rules" className="space-y-4">
         <div className="flex items-center gap-2">
           <AlertTriangle className="w-5 h-5 text-danger stroke-[2.5]" />
           <h2 className="font-heading font-black text-xl uppercase text-ink">
@@ -133,7 +153,7 @@ export default function RadarPage() {
 
                 {/* AI Drafted Clarified Clause */}
                 {item.clarified_clause && (
-                  <div className="p-4 bg-yellow-light/60 border-2 border-ink space-y-2 font-mono text-xs">
+                  <div id="tour-clarified-clause" className="p-4 bg-yellow-light/60 border-2 border-ink space-y-2 font-mono text-xs">
                     <div className="flex items-center gap-1.5 text-ink font-bold uppercase text-[10px]">
                       <Sparkles className="w-3.5 h-3.5 text-pink-600" />
                       <span>AI Proposed Clarified Clause:</span>
@@ -162,6 +182,7 @@ export default function RadarPage() {
                 {/* Owner Approval Action */}
                 <div className="pt-2 flex justify-end">
                   <button
+                    id="tour-bump-version-btn"
                     type="button"
                     onClick={() => handleApproveClarification(item.rule_id)}
                     disabled={actingRuleId === item.rule_id}

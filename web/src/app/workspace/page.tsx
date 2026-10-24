@@ -9,6 +9,7 @@ import DemoLoader from "@/components/DemoLoader";
 import WorkflowStepper from "@/components/WorkflowStepper";
 import IntentLockCard from "@/components/IntentLockCard";
 import FindingCard from "@/components/FindingCard";
+import { useTour } from "@/components/InteractiveTour";
 import { 
   Play, 
   Send, 
@@ -22,11 +23,13 @@ import {
   RefreshCw,
   Eye,
   ShieldCheck,
-  PauseCircle
+  PauseCircle,
+  Compass
 } from "lucide-react";
 
 export default function WorkspacePage() {
   const { user, role } = useAuth();
+  const { startTour } = useTour();
   const router = useRouter();
 
   const [title, setTitle] = useState("NovaFest 2026 Campus Launch Announcement");
@@ -179,6 +182,23 @@ export default function WorkspacePage() {
       {/* Workflow Stepper */}
       <WorkflowStepper currentStep={currentStep} />
 
+      {/* Contextual Creator Tour Assistant Banner */}
+      <div className="p-3 bg-yellow border-3 border-ink shadow-brutal-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+        <div className="flex items-center gap-2">
+          <Compass className="w-4 h-4 text-ink stroke-[2.5]" />
+          <span className="font-bold text-ink">
+            CREATOR WALKTHROUGH: Test presets, review citations before flags, and submit to editorial queue.
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => startTour("creator")}
+          className="brutal-btn brutal-btn-white text-[11px] py-1 px-3 border-2 font-bold uppercase hover:bg-ink hover:text-white transition-colors shrink-0 self-start sm:self-auto"
+        >
+          ▶ Start Creator Tour (7 Steps)
+        </button>
+      </div>
+
       {/* Preset Loader Bar */}
       <div id="tour-presets-bar">
         <DemoLoader onSelectPost={handleSelectPreset} selectedPostId={selectedPostId} />
@@ -238,7 +258,7 @@ export default function WorkspacePage() {
         {/* Left Column: Editor, Intent Lock, and Revised Text (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           {/* Draft Input Card */}
-          <div className="brutal-card p-5 bg-white">
+          <div id="tour-editor-box" className="brutal-card p-5 bg-white">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-3 pb-2 border-b-2 border-gray-100">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-ink stroke-[2.5]" />

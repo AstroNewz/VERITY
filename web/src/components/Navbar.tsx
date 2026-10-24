@@ -229,9 +229,9 @@ export default function Navbar() {
             {/* Tour Guide Button */}
             <button
               type="button"
-              onClick={startTour}
-              className="brutal-btn brutal-btn-yellow text-xs px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center gap-1.5 border-2 shadow-brutal-sm"
-              title="Launch step-by-step interactive walkthrough"
+              onClick={() => startTour((role as any) || "all")}
+              className="brutal-btn brutal-btn-yellow text-xs px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center gap-1.5 border-2 shadow-brutal-sm font-bold"
+              title="Launch step-by-step interactive walkthrough for current role"
             >
               <Compass className="w-3.5 h-3.5 stroke-[2.5]" />
               <span className="hidden sm:inline">Tour Guide</span>
@@ -269,18 +269,59 @@ export default function Navbar() {
       {/* Mobile Drawer (When Hamburger is Clicked) */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t-3 border-ink bg-cream p-4 space-y-4 shadow-brutal-xl">
-          {/* Mobile Tour Guide Button */}
-          <button
-            type="button"
-            onClick={() => {
-              setMobileMenuOpen(false);
-              startTour();
-            }}
-            className="w-full brutal-btn brutal-btn-yellow text-xs py-2.5 px-3 border-2 flex items-center justify-center gap-2 shadow-brutal-btn"
-          >
-            <Compass className="w-4 h-4 stroke-[2.5]" />
-            <span>Start Interactive Tour Guide</span>
-          </button>
+          {/* Mobile Tour Guide Launcher */}
+          <div className="space-y-2 p-3 bg-white border-2 border-ink">
+            <div className="flex items-center justify-between">
+              <span className="font-heading font-black text-xs uppercase text-ink flex items-center gap-1.5">
+                <Compass className="w-4 h-4 stroke-[2.5] text-ink" />
+                <span>Interactive Guided Tours</span>
+              </span>
+              <span className="brutal-chip bg-yellow text-[9px] py-0 px-1 font-bold">SELF-GUIDED</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                startTour("all");
+              }}
+              className="w-full brutal-btn brutal-btn-yellow text-xs py-2 px-3 border-2 flex items-center justify-center gap-2 shadow-brutal-btn"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Full End-to-End Tour (All Roles)</span>
+            </button>
+            <div className="grid grid-cols-3 gap-1.5 font-mono text-[10px] font-bold uppercase">
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  startTour("creator");
+                }}
+                className="py-1 px-1 text-center border border-ink bg-cream hover:bg-yellow"
+              >
+                Creator
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  startTour("reviewer");
+                }}
+                className="py-1 px-1 text-center border border-ink bg-cream hover:bg-periwinkle"
+              >
+                Reviewer
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  startTour("owner");
+                }}
+                className="py-1 px-1 text-center border border-ink bg-cream hover:bg-pink"
+              >
+                Owner
+              </button>
+            </div>
+          </div>
 
           {/* Mobile Role Switcher */}
           <div className="space-y-1.5">

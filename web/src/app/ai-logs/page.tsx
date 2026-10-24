@@ -41,7 +41,7 @@ export default function AILogsPage() {
       </div>
 
       {/* Privacy Guarantee Card */}
-      <div className="brutal-card p-6 bg-white space-y-3 border-3 border-ink">
+      <div id="tour-privacy-card" className="brutal-card p-6 bg-white space-y-3 border-3 border-ink">
         <div className="flex items-center gap-2 pb-2 border-b-2 border-ink">
           <Lock className="w-5 h-5 text-ink stroke-[2.5]" />
           <h2 className="font-heading font-black text-lg uppercase">
@@ -67,7 +67,7 @@ export default function AILogsPage() {
       </div>
 
       {/* Logs Table */}
-      <div className="brutal-card p-6 bg-white space-y-4">
+      <div id="tour-audit-logs" className="brutal-card p-6 bg-white space-y-4">
         <div className="flex items-center justify-between pb-2 border-b-2 border-ink">
           <h2 className="font-heading font-black text-lg uppercase">
             Prompt Dispatches ({logs.length})

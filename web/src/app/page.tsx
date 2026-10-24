@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/authContext";
 import { Role } from "@/lib/types";
+import { useTour, TourTrack } from "@/components/InteractiveTour";
 import { 
   ShieldCheck, 
   ArrowRight, 
@@ -15,11 +16,14 @@ import {
   EyeOff, 
   Sparkles, 
   CheckCircle2, 
-  Zap
+  Zap,
+  Compass,
+  Play
 } from "lucide-react";
 
 export default function LandingPage() {
   const { loginAsRole, role } = useAuth();
+  const { startTour } = useTour();
   const router = useRouter();
 
   const handleStartRole = async (targetRole: Role, destination: string) => {
@@ -49,6 +53,60 @@ export default function LandingPage() {
           <strong className="underline decoration-yellow decoration-4">Humans always make the final call.</strong>
         </p>
 
+        {/* Self-Guided Judge Walkthroughs Banner */}
+        <div className="brutal-card p-5 sm:p-6 bg-ink text-white border-4 border-ink shadow-brutal-xl space-y-4 max-w-3xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-white/20 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 bg-yellow text-ink border-2 border-white flex items-center justify-center shrink-0">
+                <Compass className="w-5 h-5 stroke-[2.5]" />
+              </div>
+              <div>
+                <h2 className="font-heading font-black text-base sm:text-lg uppercase text-yellow tracking-tight">
+                  Self-Guided Judge Walkthrough
+                </h2>
+                <p className="text-[11px] font-mono text-gray-300">
+                  Interactive step-by-step tour explaining every button and differentiator.
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 bg-yellow text-ink border border-white shrink-0 self-start sm:self-auto">
+              Self-Explanatory
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono">
+            <button
+              type="button"
+              onClick={() => startTour("all")}
+              className="brutal-btn brutal-btn-yellow text-xs py-2.5 px-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 shadow-brutal-sm font-black"
+            >
+              <Play className="w-3.5 h-3.5 fill-ink" />
+              <span>Full Tour (All)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => startTour("creator")}
+              className="brutal-btn brutal-btn-white text-xs py-2.5 px-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 shadow-brutal-sm text-ink font-bold"
+            >
+              <span>✍️ Creator Tour</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => startTour("reviewer")}
+              className="brutal-btn brutal-btn-white text-xs py-2.5 px-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 shadow-brutal-sm text-ink font-bold"
+            >
+              <span>⚖️ Reviewer Tour</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => startTour("owner")}
+              className="brutal-btn brutal-btn-white text-xs py-2.5 px-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 shadow-brutal-sm text-ink font-bold"
+            >
+              <span>👑 Owner Tour</span>
+            </button>
+          </div>
+        </div>
+
         {/* 1-Click Role Selection Card */}
         <div className="brutal-card p-6 sm:p-8 bg-white max-w-3xl mt-8">
           <div className="flex items-center gap-2 mb-4 pb-2 border-b-2 border-ink">
@@ -64,11 +122,10 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Creator Card */}
-            <button
+            <div
               id="tour-creator-card"
-              type="button"
               onClick={() => handleStartRole("creator", "/workspace")}
-              className="brutal-card p-5 text-left bg-yellow hover:translate-x-1 hover:-translate-y-1 transition-all group flex flex-col justify-between"
+              className="brutal-card p-5 text-left bg-yellow hover:translate-x-1 hover:-translate-y-1 transition-all group flex flex-col justify-between cursor-pointer"
             >
               <div>
                 <span className="brutal-chip bg-white text-ink text-[10px] mb-2 inline-block">
@@ -81,17 +138,28 @@ export default function LandingPage() {
                   Paste drafts, see citations, accept/reject fixes, protect Intent Lock.
                 </p>
               </div>
-              <div className="flex items-center gap-1 font-mono font-bold text-xs uppercase group-hover:translate-x-1 transition-transform">
-                <span>Enter Workspace</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+              <div className="space-y-2">
+                <div className="flex items-center gap-1 font-mono font-bold text-xs uppercase group-hover:translate-x-1 transition-transform">
+                  <span>Enter Workspace</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startTour("creator");
+                  }}
+                  className="w-full text-center px-2 py-1 bg-white text-ink border-2 border-ink text-[10px] font-mono font-bold uppercase hover:bg-ink hover:text-white transition-colors"
+                >
+                  ▶ Take Creator Tour
+                </button>
               </div>
-            </button>
+            </div>
 
             {/* Reviewer Card */}
-            <button
-              type="button"
+            <div
               onClick={() => handleStartRole("reviewer", "/approvals")}
-              className="brutal-card p-5 text-left bg-periwinkle hover:translate-x-1 hover:-translate-y-1 transition-all group flex flex-col justify-between"
+              className="brutal-card p-5 text-left bg-periwinkle hover:translate-x-1 hover:-translate-y-1 transition-all group flex flex-col justify-between cursor-pointer"
             >
               <div>
                 <span className="brutal-chip bg-white text-ink text-[10px] mb-2 inline-block">
@@ -104,17 +172,28 @@ export default function LandingPage() {
                   Inspect revision diffs, approve drafts, issue SHA-256 Publish Passports.
                 </p>
               </div>
-              <div className="flex items-center gap-1 font-mono font-bold text-xs uppercase group-hover:translate-x-1 transition-transform">
-                <span>Open Approvals</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+              <div className="space-y-2">
+                <div className="flex items-center gap-1 font-mono font-bold text-xs uppercase group-hover:translate-x-1 transition-transform">
+                  <span>Open Approvals</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startTour("reviewer");
+                  }}
+                  className="w-full text-center px-2 py-1 bg-white text-ink border-2 border-ink text-[10px] font-mono font-bold uppercase hover:bg-ink hover:text-white transition-colors"
+                >
+                  ▶ Take Reviewer Tour
+                </button>
               </div>
-            </button>
+            </div>
 
             {/* Brand Owner Card */}
-            <button
-              type="button"
+            <div
               onClick={() => handleStartRole("owner", "/constitution")}
-              className="brutal-card p-5 text-left bg-pink hover:translate-x-1 hover:-translate-y-1 transition-all group flex flex-col justify-between"
+              className="brutal-card p-5 text-left bg-pink hover:translate-x-1 hover:-translate-y-1 transition-all group flex flex-col justify-between cursor-pointer"
             >
               <div>
                 <span className="brutal-chip bg-white text-ink text-[10px] mb-2 inline-block">
@@ -127,11 +206,23 @@ export default function LandingPage() {
                   Manage Constitution, Claim Ledger, Health Radar & versioning.
                 </p>
               </div>
-              <div className="flex items-center gap-1 font-mono font-bold text-xs uppercase group-hover:translate-x-1 transition-transform">
-                <span>Brand Center</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+              <div className="space-y-2">
+                <div className="flex items-center gap-1 font-mono font-bold text-xs uppercase group-hover:translate-x-1 transition-transform">
+                  <span>Brand Center</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startTour("owner");
+                  }}
+                  className="w-full text-center px-2 py-1 bg-white text-ink border-2 border-ink text-[10px] font-mono font-bold uppercase hover:bg-ink hover:text-white transition-colors"
+                >
+                  ▶ Take Owner Tour
+                </button>
               </div>
-            </button>
+            </div>
           </div>
         </div>
       </section>

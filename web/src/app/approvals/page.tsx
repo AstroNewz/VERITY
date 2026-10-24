@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/authContext";
 import { api } from "@/lib/api";
 import { Submission, Passport } from "@/lib/types";
+import { useTour } from "@/components/InteractiveTour";
 import { 
   CheckSquare, 
   CheckCircle, 
@@ -17,12 +18,14 @@ import {
   ShieldCheck, 
   ExternalLink,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  Compass
 } from "lucide-react";
 import confetti from "canvas-confetti";
 
 export default function ApprovalsPage() {
   const { user, role, loginAsRole } = useAuth();
+  const { startTour } = useTour();
   const router = useRouter();
 
   const [submissions, setSubmissions] = useState<Submission[]>([]);
@@ -106,10 +109,27 @@ export default function ApprovalsPage() {
         )}
       </div>
 
+      {/* Contextual Reviewer Tour Assistant Banner */}
+      <div className="p-3 bg-periwinkle border-3 border-ink shadow-brutal-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+        <div className="flex items-center gap-2">
+          <Compass className="w-4 h-4 text-ink stroke-[2.5]" />
+          <span className="font-bold text-ink">
+            REVIEWER WALKTHROUGH: Inspect side-by-side diffs, check creator decisions, and issue cryptographic Publish Passports.
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => startTour("reviewer")}
+          className="brutal-btn brutal-btn-white text-[11px] py-1 px-3 border-2 font-bold uppercase hover:bg-ink hover:text-white transition-colors shrink-0 self-start sm:self-auto"
+        >
+          ▶ Start Reviewer Tour (6 Steps)
+        </button>
+      </div>
+
       {/* Main 2-Column Split View */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left List of Submissions (4 cols) */}
-        <div className="lg:col-span-4 brutal-card p-4 bg-white space-y-3">
+        <div id="tour-submissions-queue" className="lg:col-span-4 brutal-card p-4 bg-white space-y-3">
           <div className="flex items-center justify-between border-b-2 border-ink pb-2">
             <h2 className="font-heading font-black text-sm uppercase">
               Submissions Queue ({submissions.length})
@@ -233,6 +253,7 @@ export default function ApprovalsPage() {
                   </div>
 
                   <a
+                    id="tour-verify-receipt-link"
                     href={`/verify/${selectedSub.passport.id}`}
                     target="_blank"
                     rel="noreferrer"
@@ -245,7 +266,7 @@ export default function ApprovalsPage() {
               )}
 
               {/* Side-by-Side Comparison: Original Draft vs Final Revised Copy */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div id="tour-side-by-side-diff" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-3 bg-gray-50 border-2 border-ink space-y-1">
                   <span className="text-[10px] font-mono font-bold text-gray-500 uppercase block">
                     Original Draft Submitted by Creator:
@@ -283,7 +304,7 @@ export default function ApprovalsPage() {
               </div>
 
               {/* Summary of Decisions Made on Findings */}
-              <div className="space-y-2">
+              <div id="tour-findings-decision-log" className="space-y-2">
                 <h3 className="font-heading font-black text-xs uppercase text-gray-700">
                   Governance Findings & Decisions Log ({selectedSub.findings?.length || 0})
                 </h3>
@@ -331,6 +352,7 @@ export default function ApprovalsPage() {
               {/* Approval Actions Bar */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-4 border-t-2 border-ink">
                 <button
+                  id="tour-request-changes-btn"
                   type="button"
                   onClick={() => handleReviewAction("changes")}
                   disabled={acting}
