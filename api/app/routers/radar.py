@@ -14,8 +14,14 @@ from app.config import settings
 router = APIRouter(prefix="/radar", tags=["Guideline Health Radar"])
 
 @router.get("", response_model=List[HealthRadarItem])
-def get_guideline_radar(db: Session = Depends(get_db)):
-    rules = db.query(Rule).all()
+def get_guideline_radar(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    target_org = current_user.org_id or "org_novafest"
+    rules = db.query(Rule).filter(Rule.org_id == target_org).all()
+    if not rules and target_org != "org_novafest":
+        rules = db.query(Rule).filter(Rule.org_id == "org_novafest").all()
     results = []
 
     for r in rules:
@@ -103,7 +109,10 @@ def approve_clarified_clause(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role(["owner"]))
 ):
-    rule = db.query(Rule).filter(Rule.id == rule_id).first()
+    target_org = current_user.org_id or "org_novafest"
+    rule = db.query(Rule).filter(Rule.id == rule_id, Rule.org_id == target_org).first()
+    if not rule and target_org != "org_novafest":
+        rule = db.query(Rule).filter(Rule.id == rule_id, Rule.org_id == "org_novafest").first()
     if not rule:
         raise HTTPException(status_code=404, detail="Rule not found")
 
@@ -118,6 +127,7 @@ def approve_clarified_clause(
     version_record = RuleVersion(
         id=f"ver_{uuid.uuid4().hex[:8]}",
         rule_id=rule.id,
+        org_id=target_org,
         version=new_version,
         clause_diff=f"Updated from {old_version} to {new_version} with clarified creator examples.",
         approved_by=current_user.id

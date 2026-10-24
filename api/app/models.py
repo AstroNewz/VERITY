@@ -1,9 +1,9 @@
 import json
 from datetime import datetime, timezone
 from sqlalchemy import (
-    Column, String, Text, Boolean, Integer, Float, DateTime, ForeignKey, Index
+    Column, String, Text, Boolean, Integer, Float, DateTime, ForeignKey, Index, ForeignKeyConstraint
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, foreign
 from app.database import Base
 
 def utcnow():
@@ -35,6 +35,7 @@ class Rule(Base):
     __tablename__ = "rules"
 
     id = Column(String(32), primary_key=True)  # T-1, V-1, A-1, C-1, P-1
+    org_id = Column(String(64), primary_key=True, default="org_novafest")
     type = Column(String(64), nullable=False)  # terminology | voice | accessibility | claims | privacy
     title = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
@@ -47,24 +48,29 @@ class Rule(Base):
     examples_banned = Column(Text, default="[]")   # JSON string list
     created_at = Column(DateTime(timezone=True), default=utcnow)
 
-    versions = relationship("RuleVersion", back_populates="rule", cascade="all, delete-orphan")
+    versions = relationship(
+        "RuleVersion",
+        primaryjoin="and_(Rule.id==foreign(RuleVersion.rule_id), Rule.org_id==foreign(RuleVersion.org_id))",
+        cascade="all, delete-orphan",
+        lazy="selectin"
+    )
 
 class RuleVersion(Base):
     __tablename__ = "rule_versions"
 
     id = Column(String(64), primary_key=True)
-    rule_id = Column(String(32), ForeignKey("rules.id"), nullable=False)
+    rule_id = Column(String(32), nullable=False)
+    org_id = Column(String(64), default="org_novafest")
     version = Column(String(32), nullable=False)
     clause_diff = Column(Text, nullable=False)
     approved_by = Column(String(255), nullable=False)
     created_at = Column(DateTime(timezone=True), default=utcnow)
 
-    rule = relationship("Rule", back_populates="versions")
-
 class ClaimLedger(Base):
     __tablename__ = "claims_ledger"
 
     id = Column(String(32), primary_key=True)  # F-1, F-2, F-3
+    org_id = Column(String(64), primary_key=True, default="org_novafest")
     claim_text = Column(Text, nullable=False)
     source = Column(String(255), nullable=False)  # e.g. "Registrar Audit Report 2026"
     owner = Column(String(255), nullable=False)   # e.g. "Festival Operations"
@@ -77,7 +83,7 @@ class ConfidentialTerm(Base):
     id = Column(String(64), primary_key=True)
     term = Column(String(255), nullable=False)
     replacement_hint = Column(String(255), default="CONFIDENTIAL")
-    org_id = Column(String(64), nullable=True)
+    org_id = Column(String(64), default="org_novafest", nullable=True)
     created_at = Column(DateTime(timezone=True), default=utcnow)
 
 class Submission(Base):
@@ -85,12 +91,16 @@ class Submission(Base):
 
     id = Column(String(64), primary_key=True)
     creator_id = Column(String(64), ForeignKey("users.id"), nullable=False)
+    org_id = Column(String(64), default="org_novafest", index=True)
     title = Column(String(255), default="Untitled Draft")
     original_text = Column(Text, nullable=False)
     revised_text = Column(Text, default="")
     input_type = Column(String(32), default="text")  # text | docx | pptx | pdf | image
     intent_json = Column(Text, default="{}")        # JSON string of intent
     status = Column(String(32), default="draft")    # draft | analyzed | pending_approval | approved | changes_requested
+    ai_status = Column(String(32), default="offline_fallback")
+    ai_model = Column(String(64), nullable=True)
+    ai_notice = Column(String(255), nullable=True)
     created_at = Column(DateTime(timezone=True), default=utcnow)
     updated_at = Column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 

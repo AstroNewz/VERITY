@@ -3,7 +3,7 @@ from typing import Tuple, Dict, List
 from sqlalchemy.orm import Session
 from app.models import ConfidentialTerm
 
-def redact_sensitive_content(text: str, db: Session) -> Tuple[str, Dict[str, str], int]:
+def redact_sensitive_content(text: str, db: Session, org_id: str = "org_novafest") -> Tuple[str, Dict[str, str], int]:
     """
     Sanitizes user content prior to external LLM dispatch.
     Redacts:
@@ -17,7 +17,9 @@ def redact_sensitive_content(text: str, db: Session) -> Tuple[str, Dict[str, str
     sanitized = text
 
     # 1. Confidential project terms
-    conf_terms = db.query(ConfidentialTerm).all()
+    conf_terms = db.query(ConfidentialTerm).filter(ConfidentialTerm.org_id == org_id).all()
+    if not conf_terms and org_id != "org_novafest":
+        conf_terms = db.query(ConfidentialTerm).filter(ConfidentialTerm.org_id == "org_novafest").all()
     for ct in conf_terms:
         pattern = re.compile(re.escape(ct.term), re.IGNORECASE)
         matches = list(pattern.finditer(sanitized))

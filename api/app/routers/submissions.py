@@ -25,6 +25,9 @@ from app.engine.document_parser import parse_uploaded_file
 
 router = APIRouter(prefix="/submissions", tags=["Submissions & Workflow"])
 
+MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024  # 10 MB
+ALLOWED_UPLOAD_EXTS = {"txt", "md", "docx", "pptx", "pdf"}
+
 def serialize_submission(sub: Submission) -> dict:
     intent_data = None
     if sub.intent_json:
@@ -97,6 +100,9 @@ def serialize_submission(sub: Submission) -> dict:
         "findings": findings_data,
         "comments": comments_data,
         "passport": passport_data,
+        "ai_status": getattr(sub, "ai_status", "offline_fallback") or "offline_fallback",
+        "ai_model": getattr(sub, "ai_model", None),
+        "ai_notice": getattr(sub, "ai_notice", None),
         "created_at": sub.created_at,
         "updated_at": sub.updated_at
     }
@@ -111,12 +117,14 @@ def create_submission(
     sub = Submission(
         id=f"sub_{uuid.uuid4().hex[:10]}",
         creator_id=current_user.id,
+        org_id=current_user.org_id or "org_novafest",
         title=sub_in.title or "Untitled Draft",
         original_text=sub_in.original_text,
         revised_text=sub_in.original_text,
         input_type=sub_in.input_type or "text",
         intent_json=intent_model.model_dump_json(),
-        status="draft"
+        status="draft",
+        ai_status="offline_fallback"
     )
     db.add(sub)
     db.commit()
@@ -130,19 +138,35 @@ async def upload_submission_file(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    filename = file.filename or "upload.txt"
+    ext = filename.lower().split(".")[-1] if "." in filename else "txt"
+    if ext not in ALLOWED_UPLOAD_EXTS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported file type .{ext}. Allowed formats: {', '.join(sorted(ALLOWED_UPLOAD_EXTS))}"
+        )
+
     contents = await file.read()
-    extracted_text, detected_type = parse_uploaded_file(file.filename or "upload.txt", contents)
-    doc_title = title or (file.filename.rsplit(".", 1)[0] if file.filename else "Uploaded Document")
+    if len(contents) > MAX_FILE_SIZE_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail="File size exceeds the 10 MB limit."
+        )
+
+    extracted_text, detected_type = parse_uploaded_file(filename, contents)
+    doc_title = title or (filename.rsplit(".", 1)[0] if "." in filename else "Uploaded Document")
     intent_model = extract_deterministic_intent(extracted_text)
     sub = Submission(
         id=f"sub_{uuid.uuid4().hex[:10]}",
         creator_id=current_user.id,
+        org_id=current_user.org_id or "org_novafest",
         title=doc_title,
         original_text=extracted_text,
         revised_text=extracted_text,
         input_type=detected_type,
         intent_json=intent_model.model_dump_json(),
-        status="draft"
+        status="draft",
+        ai_status="offline_fallback"
     )
     db.add(sub)
     db.commit()
@@ -154,8 +178,9 @@ def list_approvals_queue(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Returns submissions pending review or recently approved
-    subs = db.query(Submission).order_by(Submission.created_at.desc()).all()
+    # Returns submissions for caller's organization
+    target_org = current_user.org_id or "org_novafest"
+    subs = db.query(Submission).filter(Submission.org_id == target_org).order_by(Submission.created_at.desc()).all()
     return [serialize_submission(s) for s in subs]
 
 @router.get("/{id}", response_model=SubmissionRead)
@@ -171,27 +196,54 @@ def analyze_submission(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    from app.config import settings
     sub = db.query(Submission).filter(Submission.id == id).first()
     if not sub:
         raise HTTPException(status_code=404, detail="Submission not found")
 
     text = sub.original_text
+    org_id = current_user.org_id or "org_novafest"
 
-    # 1. Privacy Gateway Redaction
-    sanitized_text, token_map, redactions_count = redact_sensitive_content(text, db)
+    # 1. Deterministic Checks (Terminology, Confidential, Tone, Accessibility) on RAW text
+    findings_raw = run_deterministic_checks(text, db, org_id=org_id)
 
-    # 2. Deterministic Checks (Terminology, Confidential, Tone, Accessibility)
-    findings_raw = run_deterministic_checks(text, db)
-
-    # 3. Claim Ledger Checks (Verified, Expired, Unsupported)
-    claim_findings = check_claim_ledger(text, db)
+    # 2. Claim Ledger Checks (Verified, Expired, Unsupported) on RAW text
+    claim_findings = check_claim_ledger(text, db, org_id=org_id)
     findings_raw.extend(claim_findings)
 
-    # 4. Claude Brand Voice Review
-    ai_findings, ai_used, ai_model = review_with_claude(sanitized_text, text, token_map)
-    findings_raw.extend(ai_findings)
+    # 3. Privacy Gateway Sanitization (sits ONLY in front of Claude calls)
+    sanitized_text, token_map, redactions_count = redact_sensitive_content(text, db, org_id=org_id)
 
-    # 5. Log AI usage and Privacy redactions
+    # 4. Check Global AI Daily Cap
+    now_utc = datetime.now(timezone.utc)
+    today_start = datetime(now_utc.year, now_utc.month, now_utc.day, tzinfo=timezone.utc)
+    today_ai_calls = db.query(AIUsageLog).filter(
+        AIUsageLog.created_at >= today_start,
+        AIUsageLog.model != "none",
+        AIUsageLog.model != "offline_fallback"
+    ).count()
+
+    ai_findings = []
+    ai_used = False
+    ai_model = settings.CLAUDE_MODEL
+    ai_status = "offline_fallback"
+    ai_notice = None
+
+    if today_ai_calls >= settings.AI_DAILY_CAP:
+        ai_status = "daily_cap_exceeded"
+        ai_notice = "AI review paused for today (Daily Cap Exceeded). Running deterministic checks."
+    else:
+        # 5. Claude Brand Voice Review
+        ai_findings, ai_used, ai_model = review_with_claude(sanitized_text, text, token_map)
+        findings_raw.extend(ai_findings)
+        if ai_used:
+            ai_status = "active"
+            ai_notice = None
+        else:
+            ai_status = "offline_fallback"
+            ai_notice = "AI review paused: No Anthropic API key configured. Deterministic rules & Claim Ledger are active."
+
+    # 6. Log AI usage and Privacy redactions
     if ai_used or redactions_count > 0:
         log_entry = AIUsageLog(
             id=f"ai_{uuid.uuid4().hex[:8]}",
@@ -202,7 +254,7 @@ def analyze_submission(
         )
         db.add(log_entry)
 
-    # 6. Clear previous findings & save new ones
+    # 7. Clear previous findings & save new ones
     db.query(Finding).filter(Finding.submission_id == sub.id).delete()
     db.commit()
 
@@ -232,8 +284,11 @@ def analyze_submission(
         )
         db.add(finding)
 
-    # Update submission status
+    # Update submission status and AI telemetry
     sub.status = "analyzed"
+    sub.ai_status = ai_status
+    sub.ai_model = ai_model if ai_used else None
+    sub.ai_notice = ai_notice
     db.commit()
     db.refresh(sub)
     return serialize_submission(sub)

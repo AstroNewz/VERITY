@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     # Anthropic / Claude
     ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     CLAUDE_MODEL: str = os.getenv("CLAUDE_MODEL", "claude-3-5-sonnet-20241022")
+    AI_DAILY_CAP: int = int(os.getenv("AI_DAILY_CAP", "150"))
     
     # CORS
     CORS_ORIGINS: List[str] = [

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/navigation";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/authContext";
+import { api } from "@/lib/api";
 import { Role } from "@/lib/types";
 import { 
   ShieldCheck, 
@@ -23,6 +24,43 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [resetting, setResetting] = useState(false);
+  const [isWakingServer, setIsWakingServer] = useState(false);
+
+  useEffect(() => {
+    let coldTimer: any;
+    const checkServerHealth = async () => {
+      coldTimer = setTimeout(() => {
+        setIsWakingServer(true);
+      }, 1200);
+
+      try {
+        await api.health.check();
+        clearTimeout(coldTimer);
+        setIsWakingServer(false);
+      } catch (err) {
+        setIsWakingServer(true);
+        const poll = setInterval(async () => {
+          try {
+            await api.health.check();
+            clearInterval(poll);
+            setIsWakingServer(false);
+          } catch (_) {}
+        }, 3000);
+      }
+    };
+
+    checkServerHealth();
+
+    // 10-minute keep-alive ping (Audit Item C)
+    const keepAlive = setInterval(() => {
+      api.health.check().catch(() => {});
+    }, 10 * 60 * 1000);
+
+    return () => {
+      clearTimeout(coldTimer);
+      clearInterval(keepAlive);
+    };
+  }, []);
 
   const handleRoleChange = async (newRole: Role) => {
     await loginAsRole(newRole);
@@ -67,6 +105,19 @@ export default function Navbar() {
           <span className="text-mint">ALL CHECKS LOCAL & SAFE</span>
         </div>
       </div>
+
+      {/* Cold Server Wakeup Alert (Audit Item C) */}
+      {isWakingServer && (
+        <div className="bg-coral text-white py-2 px-4 text-xs font-mono font-bold flex items-center justify-between border-b-2 border-ink animate-pulse">
+          <div className="flex items-center gap-2">
+            <span className="animate-spin text-sm">⏳</span>
+            <span>Waking the server, this can take up to a minute (Render / Cloud Spin-Up)...</span>
+          </div>
+          <span className="text-[10px] uppercase tracking-wider bg-ink text-white px-2 py-0.5 border border-white">
+            Cold Start Detected
+          </span>
+        </div>
+      )}
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

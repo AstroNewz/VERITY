@@ -5,6 +5,7 @@ from datetime import datetime
 # Auth Schemas
 class DemoLoginRequest(BaseModel):
     role: str = Field(..., description="Role: creator, reviewer, or owner")
+    session_id: Optional[str] = Field(None, description="Client session ID for isolated multi-tenant demo sandbox")
 
 class UserRead(BaseModel):
     id: str
@@ -183,6 +184,9 @@ class SubmissionRead(BaseModel):
     findings: List[FindingRead] = []
     comments: List[CommentRead] = []
     passport: Optional[PassportRead] = None
+    ai_status: Optional[str] = "offline_fallback"
+    ai_model: Optional[str] = None
+    ai_notice: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

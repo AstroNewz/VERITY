@@ -8,10 +8,24 @@ function getToken(): string | null {
   return null;
 }
 
+export function getSessionId(): string {
+  if (typeof window !== "undefined") {
+    let sid = localStorage.getItem("verity_session_id");
+    if (!sid) {
+      sid = "judge_" + Math.random().toString(36).substring(2, 10);
+      localStorage.setItem("verity_session_id", sid);
+    }
+    return sid;
+  }
+  return "default_judge";
+}
+
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
+  const sessionId = getSessionId();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
+    "X-Session-ID": sessionId,
     ...(options.headers as Record<string, string>),
   };
 
@@ -40,6 +54,13 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 }
 
 export const api = {
+  health: {
+    check: async () => {
+      const res = await fetch(`${API_BASE}/health`);
+      if (!res.ok) throw new Error("Cold or unhealthy");
+      return await res.json();
+    },
+  },
   auth: {
     demoLogin: (role: string) =>
       request<{ access_token: string; user: any }>("/auth/demo-login", {
@@ -98,6 +119,8 @@ export const api = {
   passports: {
     get: (id: string) => request<any>(`/passports/${id}`),
     verify: (id: string) => request<any>(`/passports/${id}/verify`),
+    simulateTamper: (id: string) => request<any>(`/passports/${id}/simulate-tamper`, { method: "POST" }),
+    restoreOriginal: (id: string) => request<any>(`/passports/${id}/restore-original`, { method: "POST" }),
   },
   radar: {
     get: () => request<any[]>("/radar"),

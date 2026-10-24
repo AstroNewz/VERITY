@@ -3,8 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import Passport
+from app.models import Passport, User
 from app.schemas import PassportRead, PassportVerifyResponse
+from app.auth import get_current_user, require_role
 from app.engine.passport import verify_passport_integrity
 
 router = APIRouter(prefix="/passports", tags=["Publish Passports & Verification"])
@@ -65,3 +66,53 @@ def verify_passport(id: str, db: Session = Depends(get_db)):
         "approver": details.get("approver_id", ""),
         "issued_at": details.get("issued_at")
     }
+
+@router.post("/{id}/simulate-tamper")
+def simulate_tamper_passport(
+    id: str,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(["owner"]))
+):
+    """
+    Owner-only demonstration action:
+    Simulates malicious alteration of database copy after reviewer sign-off.
+    Causes public verification to recompute the SHA-256 seal and flag TAMPERED.
+    """
+    passport = db.query(Passport).filter(Passport.id == id).first()
+    if not passport:
+        raise HTTPException(status_code=404, detail="Passport not found")
+
+    sub = passport.submission
+    if not sub:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    # Tamper with the post-approval text in the database
+    sub.revised_text = (sub.revised_text or "") + " [SIMULATED TAMPER: 100% UNAPPROVED FREE TICKETS ADDED POST-SIGN-OFF!]"
+    db.commit()
+
+    return {
+        "status": "tampered",
+        "message": "Content maliciously modified in database. Verification will now flag TAMPERED DETECTED."
+    }
+
+@router.post("/{id}/restore-original")
+def restore_original_passport(
+    id: str,
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(["owner"]))
+):
+    """
+    Owner action to revert simulated tampering back to original approved copy.
+    """
+    passport = db.query(Passport).filter(Passport.id == id).first()
+    if not passport or not passport.submission:
+        raise HTTPException(status_code=404, detail="Passport or submission not found")
+
+    sub = passport.submission
+    tamper_snippet = " [SIMULATED TAMPER: 100% UNAPPROVED FREE TICKETS ADDED POST-SIGN-OFF!]"
+    if tamper_snippet in sub.revised_text:
+        sub.revised_text = sub.revised_text.replace(tamper_snippet, "")
+        db.commit()
+
+    return {"status": "restored", "message": "Original approved text restored. Verification is now VALID."}
+

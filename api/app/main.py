@@ -37,8 +37,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Health endpoint
+# Health endpoints
 @app.get("/health", tags=["Health"])
+@app.get("/api/v1/health", tags=["Health"])
 def health_check():
     return {
         "status": "healthy",

@@ -13,7 +13,9 @@ import {
   Calendar, 
   User, 
   Sparkles, 
-  FileText
+  FileText,
+  AlertTriangle,
+  RotateCcw
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -25,6 +27,8 @@ export default function PassportVerifyPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [tampering, setTampering] = useState(false);
+  const [restoring, setRestoring] = useState(false);
 
   useEffect(() => {
     if (passportId) {
@@ -43,6 +47,42 @@ export default function PassportVerifyPage() {
       setError(err.message || "Failed to verify passport.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSimulateTamper = async () => {
+    setTampering(true);
+    try {
+      const userStr = typeof window !== "undefined" ? localStorage.getItem("verity_user") : null;
+      const user = userStr ? JSON.parse(userStr) : null;
+      if (user?.role !== "owner") {
+        await api.auth.demoLogin("owner");
+      }
+      await api.passports.simulateTamper(passportId);
+      await verifyPassport();
+    } catch (err: any) {
+      console.error("Simulate tamper error:", err);
+      alert("Simulate tamper error: " + err.message);
+    } finally {
+      setTampering(false);
+    }
+  };
+
+  const handleRestoreOriginal = async () => {
+    setRestoring(true);
+    try {
+      const userStr = typeof window !== "undefined" ? localStorage.getItem("verity_user") : null;
+      const user = userStr ? JSON.parse(userStr) : null;
+      if (user?.role !== "owner") {
+        await api.auth.demoLogin("owner");
+      }
+      await api.passports.restoreOriginal(passportId);
+      await verifyPassport();
+    } catch (err: any) {
+      console.error("Restore error:", err);
+      alert("Restore error: " + err.message);
+    } finally {
+      setRestoring(false);
     }
   };
 
@@ -145,6 +185,47 @@ export default function PassportVerifyPage() {
             ? "Cryptographic SHA-256 seal verified. Content exactly matches editorial approval."
             : "Warning: Post copy has been altered after editorial approval was issued!"}
         </p>
+      </div>
+
+      {/* Owner-Only Cryptographic Tamper Simulator Box (Audit Item 5) */}
+      <div className="brutal-card p-5 bg-white border-3 border-ink shadow-brutal space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-ink pb-2">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-accent-pink stroke-[2.5]" />
+            <span className="font-heading font-black text-sm uppercase text-ink">
+              Owner-Only Cryptographic Tamper Simulator
+            </span>
+          </div>
+          <span className="text-[10px] font-mono font-bold uppercase bg-ink text-white px-2 py-0.5">
+            Audit Checklist #5
+          </span>
+        </div>
+        <p className="font-mono text-xs text-gray-700 leading-relaxed">
+          Verity guarantees integrity through cryptographic SHA-256 seal verification. Test this by simulating an unauthorized mutation to the stored copy in the database and verifying that the public receipt immediately detects the anomaly.
+        </p>
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          <button
+            type="button"
+            onClick={handleSimulateTamper}
+            disabled={tampering}
+            className="brutal-btn brutal-btn-pink text-xs py-2 px-4 border-2 flex items-center gap-2 shadow-brutal-sm"
+          >
+            <AlertTriangle className="w-4 h-4" />
+            <span>{tampering ? "Tampering database..." : "🚨 Simulate Tamper (Owner Action)"}</span>
+          </button>
+
+          {!isValid && (
+            <button
+              type="button"
+              onClick={handleRestoreOriginal}
+              disabled={restoring}
+              className="brutal-btn brutal-btn-mint text-xs py-2 px-4 border-2 flex items-center gap-2 shadow-brutal-sm"
+            >
+              <RotateCcw className="w-4 h-4" />
+              <span>{restoring ? "Restoring original..." : "✅ Restore Approved Copy (Reset)"}</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Passport Details Card */}

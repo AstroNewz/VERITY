@@ -48,37 +48,49 @@ DEMO_POSTS = [
     }
 ]
 
-def seed_database(db: Session, force_reset: bool = False):
+def seed_organization(db: Session, org_id: str = "org_novafest", force_reset: bool = False):
     if force_reset:
-        db.query(AIUsageLog).delete()
-        db.query(Passport).delete()
-        db.query(Comment).delete()
-        db.query(Finding).delete()
-        db.query(Submission).delete()
-        db.query(ConfidentialTerm).delete()
-        db.query(ClaimLedger).delete()
-        db.query(RuleVersion).delete()
-        db.query(Rule).delete()
-        db.query(User).delete()
-        db.query(Organization).delete()
+        subs = db.query(Submission).filter(Submission.org_id == org_id).all()
+        sub_ids = [s.id for s in subs]
+        if sub_ids:
+            db.query(AIUsageLog).filter(AIUsageLog.submission_id.in_(sub_ids)).delete(synchronize_session=False)
+            db.query(Passport).filter(Passport.submission_id.in_(sub_ids)).delete(synchronize_session=False)
+            db.query(Comment).filter(Comment.submission_id.in_(sub_ids)).delete(synchronize_session=False)
+            db.query(Finding).filter(Finding.submission_id.in_(sub_ids)).delete(synchronize_session=False)
+            db.query(Submission).filter(Submission.id.in_(sub_ids)).delete(synchronize_session=False)
+
+        db.query(ConfidentialTerm).filter(ConfidentialTerm.org_id == org_id).delete(synchronize_session=False)
+        db.query(ClaimLedger).filter(ClaimLedger.org_id == org_id).delete(synchronize_session=False)
+        db.query(RuleVersion).filter(RuleVersion.org_id == org_id).delete(synchronize_session=False)
+        db.query(Rule).filter(Rule.org_id == org_id).delete(synchronize_session=False)
+        db.query(User).filter(User.org_id == org_id).delete(synchronize_session=False)
+        db.query(Organization).filter(Organization.id == org_id).delete(synchronize_session=False)
         db.commit()
 
     # 1. Organization
-    org = db.query(Organization).filter(Organization.id == "org_novafest").first()
+    org = db.query(Organization).filter(Organization.id == org_id).first()
     if not org:
         org = Organization(
-            id="org_novafest",
+            id=org_id,
             name="Nova Fest Executive Council"
         )
         db.add(org)
         db.commit()
 
-    # 2. Users
-    users_data = [
-        {"id": "user_creator", "name": "Maya Lin", "email": "creator@novafest.edu", "role": "creator"},
-        {"id": "user_reviewer", "name": "Dr. Arvind Rao", "email": "reviewer@novafest.edu", "role": "reviewer"},
-        {"id": "user_owner", "name": "Anya Sharma", "email": "owner@novafest.edu", "role": "owner"}
-    ]
+    # 2. Users (Scoped to org)
+    if org_id == "org_novafest":
+        users_data = [
+            {"id": "user_creator", "name": "Maya Lin", "email": "creator@novafest.edu", "role": "creator"},
+            {"id": "user_reviewer", "name": "Dr. Arvind Rao", "email": "reviewer@novafest.edu", "role": "reviewer"},
+            {"id": "user_owner", "name": "Anya Sharma", "email": "owner@novafest.edu", "role": "owner"}
+        ]
+    else:
+        users_data = [
+            {"id": f"creator_{org_id}", "name": "Maya Lin", "email": f"creator_{org_id}@novafest.edu", "role": "creator"},
+            {"id": f"reviewer_{org_id}", "name": "Dr. Arvind Rao", "email": f"reviewer_{org_id}@novafest.edu", "role": "reviewer"},
+            {"id": f"owner_{org_id}", "name": "Anya Sharma", "email": f"owner_{org_id}@novafest.edu", "role": "owner"}
+        ]
+
     for u in users_data:
         if not db.query(User).filter(User.id == u["id"]).first():
             db.add(User(
@@ -86,7 +98,7 @@ def seed_database(db: Session, force_reset: bool = False):
                 name=u["name"],
                 email=u["email"],
                 role=u["role"],
-                org_id="org_novafest"
+                org_id=org_id
             ))
     db.commit()
 
@@ -194,10 +206,11 @@ def seed_database(db: Session, force_reset: bool = False):
     ]
 
     for r in rules_data:
-        rule_obj = db.query(Rule).filter(Rule.id == r["id"]).first()
+        rule_obj = db.query(Rule).filter(Rule.id == r["id"], Rule.org_id == org_id).first()
         if not rule_obj:
             rule_obj = Rule(
                 id=r["id"],
+                org_id=org_id,
                 type=r["type"],
                 title=r["title"],
                 description=r["description"],
@@ -239,10 +252,11 @@ def seed_database(db: Session, force_reset: bool = False):
     ]
 
     for item in ledger_data:
-        claim_obj = db.query(ClaimLedger).filter(ClaimLedger.id == item["id"]).first()
+        claim_obj = db.query(ClaimLedger).filter(ClaimLedger.id == item["id"], ClaimLedger.org_id == org_id).first()
         if not claim_obj:
             claim_obj = ClaimLedger(
                 id=item["id"],
+                org_id=org_id,
                 claim_text=item["claim_text"],
                 source=item["source"],
                 owner=item["owner"],
@@ -253,7 +267,7 @@ def seed_database(db: Session, force_reset: bool = False):
 
     # 5. Confidential Terms
     conf_terms = [
-        {"id": "ct_1", "term": "Project Falcon", "replacement_hint": "Surprise Headliner Announcement"}
+        {"id": f"ct_1_{org_id}", "term": "Project Falcon", "replacement_hint": "Surprise Headliner Announcement"}
     ]
     for ct in conf_terms:
         if not db.query(ConfidentialTerm).filter(ConfidentialTerm.id == ct["id"]).first():
@@ -261,6 +275,10 @@ def seed_database(db: Session, force_reset: bool = False):
                 id=ct["id"],
                 term=ct["term"],
                 replacement_hint=ct["replacement_hint"],
-                org_id="org_novafest"
+                org_id=org_id
             ))
     db.commit()
+
+def seed_database(db: Session, force_reset: bool = False):
+    """Seed default organization org_novafest"""
+    seed_organization(db, org_id="org_novafest", force_reset=force_reset)

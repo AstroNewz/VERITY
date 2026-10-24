@@ -29,11 +29,13 @@ def calculate_contrast_ratio(hex1: str, hex2: str) -> float:
     except Exception:
         return 21.0
 
-def run_deterministic_checks(text: str, db: Session) -> List[Dict[str, Any]]:
+def run_deterministic_checks(text: str, db: Session, org_id: str = "org_novafest") -> List[Dict[str, Any]]:
     findings = []
 
     # 1. Confidential Terms Check (P-1)
-    conf_terms = db.query(ConfidentialTerm).all()
+    conf_terms = db.query(ConfidentialTerm).filter(ConfidentialTerm.org_id == org_id).all()
+    if not conf_terms and org_id != "org_novafest":
+        conf_terms = db.query(ConfidentialTerm).filter(ConfidentialTerm.org_id == "org_novafest").all()
     for ct in conf_terms:
         pattern = re.compile(re.escape(ct.term), re.IGNORECASE)
         for match in pattern.finditer(text):
@@ -150,8 +152,8 @@ def run_deterministic_checks(text: str, db: Session) -> List[Dict[str, Any]]:
             })
 
     # 7. Accessibility: Color Contrast Check (A-1)
-    # Pattern: text color #HEX on [background] #HEX
-    contrast_pattern = re.compile(r'#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\s+(?:on|against)\s+(?:background\s+)?#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})', re.IGNORECASE)
+    # Pattern: text color #HEX on [a/an/the] [background] #HEX
+    contrast_pattern = re.compile(r'#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\s+(?:on|against|over)\s+(?:(?:a|an|the)\s+)?(?:background\s+)?#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})', re.IGNORECASE)
     for match in contrast_pattern.finditer(text):
         fg_hex = "#" + match.group(1)
         bg_hex = "#" + match.group(2)

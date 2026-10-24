@@ -123,32 +123,32 @@ export default function WorkspacePage() {
     }
   };
 
-  // File Upload Handler (Parses DOCX, PPTX, PDF, and TXT)
+  // File Upload Handler (Parses DOCX, PPTX, PDF, and TXT with 10 MB limit)
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Enforce 10 MB limit (Audit Item 4)
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      setStatusMessage("Error: File exceeds maximum allowed size of 10 MB.");
+      return;
+    }
+
+    const ext = file.name.split(".").pop()?.toLowerCase();
+    const allowed = ["txt", "md", "docx", "pptx", "pdf"];
+    if (!ext || !allowed.includes(ext)) {
+      setStatusMessage(`Error: Unsupported file type .${ext}. Only .txt, .md, .docx, .pptx, and .pdf are allowed.`);
+      return;
+    }
+
     setStatusMessage(`Uploading and extracting text from ${file.name}...`);
     try {
-      const ext = file.name.split(".").pop()?.toLowerCase();
-      if (ext === "docx" || ext === "pptx" || ext === "pdf") {
-        const sub = await api.submissions.upload(file);
-        setDraftText(sub.original_text);
-        setTitle(sub.title);
-        setSubmission(sub);
-        setStatusMessage(`Successfully parsed ${file.name} (${sub.input_type.toUpperCase()} format).`);
-      } else {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const content = event.target?.result as string;
-          if (content) {
-            setDraftText(content);
-            setTitle(file.name.replace(/\.[^/.]+$/, ""));
-            setStatusMessage(`Loaded file content from: ${file.name}`);
-          }
-        };
-        reader.readAsText(file);
-      }
+      const sub = await api.submissions.upload(file);
+      setDraftText(sub.original_text);
+      setTitle(sub.title || file.name.replace(/\.[^/.]+$/, ""));
+      setSubmission(sub);
+      setStatusMessage(`Successfully parsed ${file.name} (${sub.input_type.toUpperCase()} format). Click 'Run Verity Governance Check' to analyze.`);
     } catch (err: any) {
       console.error("Upload error:", err);
       setStatusMessage(`Failed to parse file: ${err.message}`);
@@ -180,6 +180,35 @@ export default function WorkspacePage() {
 
       {/* Preset Loader Bar */}
       <DemoLoader onSelectPost={handleSelectPreset} selectedPostId={selectedPostId} />
+
+      {/* AI Telemetry & Graceful Degradation Notice (Audit Items 1 & D) */}
+      {submission && (
+        <div
+          className={`p-3 border-2 border-ink text-xs font-mono font-bold flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-brutal-sm ${
+            submission.ai_status === "active"
+              ? "bg-mint text-ink"
+              : submission.ai_status === "daily_cap_exceeded"
+              ? "bg-coral text-white"
+              : "bg-yellow/40 text-ink"
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-base">
+              {submission.ai_status === "active" ? "✨" : submission.ai_status === "daily_cap_exceeded" ? "⏸️" : "⚠️"}
+            </span>
+            <span>
+              {submission.ai_status === "active"
+                ? `Claude AI Active (${submission.ai_model || "Claude 3.5 Sonnet"}): Multi-agent intent preservation & voice tone checks enabled.`
+                : submission.ai_status === "daily_cap_exceeded"
+                ? `AI review paused for today: Global daily quota reached. Gracefully operating in 100% deterministic rule citation & ledger verification mode.`
+                : `Demo Notice: Deterministic Engine Active. Anthropic key offline. Deterministic rules, Privacy Gateway, and Claim Ledger are operating with full fidelity.`}
+            </span>
+          </div>
+          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 border border-ink bg-white text-ink font-mono font-black shrink-0">
+            {(submission.ai_status || "offline_fallback").replace("_", " ")}
+          </span>
+        </div>
+      )}
 
       {/* Status Notice Strip */}
       {statusMessage && (

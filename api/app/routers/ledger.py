@@ -39,8 +39,14 @@ def serialize_claim(claim: ClaimLedger) -> dict:
     }
 
 @router.get("/ledger", response_model=List[ClaimLedgerRead])
-def list_claim_ledger(db: Session = Depends(get_db)):
-    claims = db.query(ClaimLedger).all()
+def list_claim_ledger(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    target_org = current_user.org_id or "org_novafest"
+    claims = db.query(ClaimLedger).filter(ClaimLedger.org_id == target_org).all()
+    if not claims and target_org != "org_novafest":
+        claims = db.query(ClaimLedger).filter(ClaimLedger.org_id == "org_novafest").all()
     return [serialize_claim(c) for c in claims]
 
 @router.post("/ledger", response_model=ClaimLedgerRead, status_code=status.HTTP_201_CREATED)
@@ -49,12 +55,14 @@ def add_claim_entry(
     current_user: User = Depends(require_role(["owner"])),
     db: Session = Depends(get_db)
 ):
-    existing = db.query(ClaimLedger).filter(ClaimLedger.id == claim_in.id).first()
+    target_org = current_user.org_id or "org_novafest"
+    existing = db.query(ClaimLedger).filter(ClaimLedger.id == claim_in.id, ClaimLedger.org_id == target_org).first()
     if existing:
-        raise HTTPException(status_code=400, detail="Claim ID already exists")
+        raise HTTPException(status_code=400, detail="Claim ID already exists in this organization")
 
     claim = ClaimLedger(
         id=claim_in.id,
+        org_id=target_org,
         claim_text=claim_in.claim_text,
         source=claim_in.source,
         owner=claim_in.owner,
@@ -66,8 +74,14 @@ def add_claim_entry(
     return serialize_claim(claim)
 
 @router.get("/confidential-terms", response_model=List[ConfidentialTermRead])
-def list_confidential_terms(db: Session = Depends(get_db)):
-    terms = db.query(ConfidentialTerm).all()
+def list_confidential_terms(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    target_org = current_user.org_id or "org_novafest"
+    terms = db.query(ConfidentialTerm).filter(ConfidentialTerm.org_id == target_org).all()
+    if not terms and target_org != "org_novafest":
+        terms = db.query(ConfidentialTerm).filter(ConfidentialTerm.org_id == "org_novafest").all()
     return terms
 
 @router.post("/confidential-terms", response_model=ConfidentialTermRead, status_code=status.HTTP_201_CREATED)
@@ -77,10 +91,12 @@ def add_confidential_term(
     db: Session = Depends(get_db)
 ):
     import uuid
+    target_org = current_user.org_id or "org_novafest"
     new_term = ConfidentialTerm(
         id=f"ct_{uuid.uuid4().hex[:8]}",
         term=term_in.term,
-        replacement_hint=term_in.replacement_hint or "CONFIDENTIAL"
+        replacement_hint=term_in.replacement_hint or "CONFIDENTIAL",
+        org_id=target_org
     )
     db.add(new_term)
     db.commit()

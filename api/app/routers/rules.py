@@ -35,13 +35,26 @@ def serialize_rule(r: Rule) -> dict:
     }
 
 @router.get("", response_model=List[RuleRead])
-def list_rules(db: Session = Depends(get_db)):
-    rules = db.query(Rule).all()
+def list_rules(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    target_org = current_user.org_id or "org_novafest"
+    rules = db.query(Rule).filter(Rule.org_id == target_org).all()
+    if not rules and target_org != "org_novafest":
+        rules = db.query(Rule).filter(Rule.org_id == "org_novafest").all()
     return [serialize_rule(r) for r in rules]
 
 @router.get("/{id}", response_model=RuleRead)
-def get_rule(id: str, db: Session = Depends(get_db)):
-    rule = db.query(Rule).filter(Rule.id == id).first()
+def get_rule(
+    id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    target_org = current_user.org_id or "org_novafest"
+    rule = db.query(Rule).filter(Rule.id == id, Rule.org_id == target_org).first()
+    if not rule and target_org != "org_novafest":
+        rule = db.query(Rule).filter(Rule.id == id, Rule.org_id == "org_novafest").first()
     if not rule:
         raise HTTPException(status_code=404, detail="Rule not found")
     return serialize_rule(rule)
@@ -52,12 +65,14 @@ def create_rule(
     current_user: User = Depends(require_role(["owner"])),
     db: Session = Depends(get_db)
 ):
-    existing = db.query(Rule).filter(Rule.id == rule_in.id).first()
+    target_org = current_user.org_id or "org_novafest"
+    existing = db.query(Rule).filter(Rule.id == rule_in.id, Rule.org_id == target_org).first()
     if existing:
-        raise HTTPException(status_code=400, detail="Rule with this ID already exists")
+        raise HTTPException(status_code=400, detail="Rule with this ID already exists in this organization")
 
     rule = Rule(
         id=rule_in.id,
+        org_id=target_org,
         type=rule_in.type,
         title=rule_in.title,
         description=rule_in.description,

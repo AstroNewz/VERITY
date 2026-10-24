@@ -40,10 +40,12 @@ def find_best_ledger_match(phrase: str, ledger_entries: List[ClaimLedger]) -> Op
 
     return best_entry
 
-def check_claim_ledger(text: str, db: Session) -> List[Dict[str, Any]]:
+def check_claim_ledger(text: str, db: Session, org_id: str = "org_novafest") -> List[Dict[str, Any]]:
     findings = []
     now = utcnow()
-    ledger_entries = db.query(ClaimLedger).all()
+    ledger_entries = db.query(ClaimLedger).filter(ClaimLedger.org_id == org_id).all()
+    if not ledger_entries and org_id != "org_novafest":
+        ledger_entries = db.query(ClaimLedger).filter(ClaimLedger.org_id == "org_novafest").all()
 
     # Find claim candidates in text
     spans_evaluated = []

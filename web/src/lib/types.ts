@@ -112,6 +112,9 @@ export interface Submission {
   input_type: string;
   intent?: IntentLock;
   status: 'draft' | 'analyzed' | 'pending_approval' | 'approved' | 'changes_requested';
+  ai_status?: 'active' | 'offline_fallback' | 'daily_cap_exceeded' | string;
+  ai_model?: string;
+  ai_notice?: string;
   findings: Finding[];
   comments: Comment[];
   passport?: Passport;

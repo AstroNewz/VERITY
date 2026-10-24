@@ -1,66 +1,57 @@
-# Verity — Completed Features & Known Limitations
+# Verity — Verified Feature Matrix & Known Limitations
 
 **Product:** Verity | **Team:** BraKet | **Round:** CodeAxis Round 2 ("The Build")  
 **Tagline:** *"Brand governance that cites before it flags."*  
-**Promise:** *"Brand errors caught before they are public."*
+**Promise:** *"Brand errors caught before they are public."*  
+**Audit Reference:** [docs/AUDIT.md](file:///c:/Users/ISHAN%20SHUKLA/Desktop/Verity_CodeAxis/docs/AUDIT.md)
 
 ---
 
-## 1. Completed Features
+## 1. Verified Completed Features (Audit Confirmed)
 
-### Core Journey & Governance Engine (P0 & P1)
-- **Cites Before It Flags**: Every single finding points to a specific rule ID (e.g. `Rule T-1`), source document, page, and owning committee.
+### Core Governance & Deterministic Checks (Raw Text First)
+- **Cites Before It Flags (100% Citing Rate)**:
+  - Every finding points to a specific rule ID (e.g. `Rule T-1`), source document, page/section reference, and owning governance committee.
+  - No uncited flags or vague error messages.
+- **Order of Operations**:
+  - Deterministic checks (Terminology, Confidential, Tone, Accessibility) and Claim Ledger matching execute directly on the creator's raw text.
+  - The Privacy Gateway sits strictly in front of external LLM calls to sanitize confidential and PII tokens before inference.
+- **Rule Engine**:
+  - **Terminology (`T-1`, `T-2`, `T-3`)**: Enforces official festival name casing (`Nova Fest` vs `NovaFest`) and vocabulary (`affordable` vs `cheap`, bans on unsubstantiated guarantees).
+  - **Confidential Terms (`P-1`)**: Blocks publication of unreleased codenames (e.g. `Project Falcon`) until official embargo lifts.
+  - **Tone Hygiene (`V-1`, `V-2`)**: Enforces exclamation point limits (max 1 per paragraph, blocks `!!!`) and flags shouting ALL-CAPS words.
+  - **Digital Accessibility (`A-1`, `A-2`)**: Mathematically computes WCAG 2.1 AA luminance contrast ratio on hex colors (e.g. `#FFFF00` on `#FFFFFF` = 1.07:1, failing 4.5:1 minimum) and flags missing markdown alt-text (`![]()`).
 - **Claim Ledger™**:
-  - Automatically detects statistics, rankings, percentages, and attendee counts.
-  - Matches claims against the approved ledger and tags them with one of four statuses:
-    - `VERIFIED`: Approved source cited with validity date.
-    - `EXPIRES SOON`: Active claim with less than 30 days remaining on validity window.
-    - `EXPIRED`: Flags claims that cite outdated evidence (e.g. `Ledger F-2` expired in 2025).
-    - `UNSUPPORTED`: Flags claims lacking documentation in the ledger.
-  - 30-Day Expiry Timeline strip on the Claims Ledger dashboard.
+  - Detects candidate claims via regex (rankings, counts, percentages, free pricing).
+  - Matches claims against the database via exact substring and lexical token overlap.
+  - Classifies into four distinct statuses: `VERIFIED` (cites approved source and validity date), `EXPIRES SOON` (<30 days remaining), `EXPIRED` (outdated evidence), and `UNSUPPORTED`.
 - **Intent Lock™**:
-  - Extracts `{goal, audience, key_message, tone, must_keep_phrases[], call_to_action}` before suggested fixes are applied.
-  - Re-evaluates revised copy against the Intent Lock to verify that brand corrections did not distort the creator's promotional message. Displays `INTENT PRESERVED` or `INTENT AT RISK`.
-- **Deterministic Check Engine (100% Free & Fast)**:
-  - **Terminology**: Enforces official brand casing (`Nova Fest` vs `NovaFest`) and vocabulary standards (`affordable` vs `cheap`, prohibitions on unverified guarantees).
-  - **Confidential Terms**: Immediate publication block on unreleased project codenames (`Project Falcon`).
-  - **Tone Hygiene**: Flags repeated exclamation points (`!!!`), excessive ALL-CAPS words, and shouting.
-  - **Accessibility**: Real mathematical WCAG AA contrast ratio calculation (`#FFFF00` on `#FFFFFF` = 1.07:1, failing 4.5:1 requirement) and missing image alt-text checks.
-- **Claude AI Brand Voice Review**:
-  - Evaluates copy against brand voice attributes (*warm, energetic, plain English, no hype*).
-  - Strict substring quote validation: any model output that does not match an exact substring in the source text is discarded.
-  - Delimited inside `<untrusted_content>` tags to prevent prompt injection.
-  - Confidence routing: `≥ 0.85` shown as normal finding; `0.60 – 0.85` marked `[Please check]`; `< 0.60` sent to reviewer queue.
+  - Automatically extracts creator purpose: goal, target audience, core message, and key phrases.
+  - Continuously validates suggested fixes against original intent, tagging copy as `INTENT PRESERVED` or `INTENT AT RISK`.
 - **Privacy Gateway**:
-  - Server-side redactor scrubs emails, phone numbers, and confidential terms into tokens like `[REDACTED-CONFIDENTIAL-1]` prior to any external LLM call.
-  - De-redaction engine restores original tokens inside suggested fixes so the creator sees their actual text.
-  - Audit trail logged in `ai_usage_log`.
+  - Tokenizes sensitive entities (`[REDACTED-CONFIDENTIAL-1]`) prior to Claude calls.
+  - Restores tokens in suggested fixes so creators receive clear copy.
+  - Logs model and redaction counts into `ai_usage_log`.
 - **Publish Passport™**:
-  - Upon authorized Reviewer approval, computes a canonical SHA-256 seal over `(final_text + rules_version + approver_id + issued_at + ai_used + findings_summary)`.
-  - Public verification screen at `/verify/[id]` that recomputes the cryptographic hash from current database copy and displays `VALID & UNTAMPERED` (mint) or `TAMPERED DETECTED` (red).
-  - Includes scannable QR Code and one-click JSON receipt download.
-- **Guideline Health Radar™**:
-  - Calculates rejection rates and reviewer disagreements per rule.
-  - Flags rules with `≥ 50%` creator rejection rate as `UNCLEAR`.
-  - Automatically drafts clarified clauses with 1 approved and 1 banned example.
-  - One-click Brand Owner approval increments rule version from `1.0` to `1.1`.
-- **Governance Insights Dashboard**:
-  - Real-time KPIs: Submissions reviewed, passports issued, brand errors caught, average approval time.
-  - Top repeated mistakes bar chart.
-  - Most overridden rules table with direct radar jump links.
-  - Categorical mistake distribution and 4-week drift reduction tracking.
-- **Frictionless Demo Experience**:
-  - Zero-setup 1-click role switcher in navbar: Creator, Reviewer, Brand Owner.
-  - 6 seeded demo posts with planted errors and clean copy controls.
-  - One-click "Reset Demo Data" button to restore pristine state at any time.
+  - Authorized reviewers issue a cryptographic SHA-256 seal across `(revised_text + rules_version + approver_id + issued_at + summary)`.
+  - Public `/verify/[id]` screen verifies the seal and computes the live content hash to detect any post-approval tampering.
+- **Guideline Health Radar™ & Governance Insights**:
+  - Monitors rule performance, creator rejection rates, and reviewer overrides.
+  - Auto-drafts clarified clauses for disputed rules.
+  - Real-time KPIs, repeated mistake distribution, and drift tracking.
 
 ---
 
-## 2. Honest Known Limitations
+## 2. Known Limitations & Audit Findings (Transparent Disclosure)
 
-1. **AI Degradation Under Missing Keys**:
-   - When `ANTHROPIC_API_KEY` is not present, Verity degrades to deterministic checks. While all terminology, claim ledger, tone hygiene, and accessibility rules operate at 100% accuracy, subjective tone nuance checks require an active API key.
-2. **Local Vector Search Fallback**:
-   - In local development without a running pgvector Postgres instance, Claim Ledger matching operates via exact phrase containment and token overlap heuristics. Full semantic embedding matching requires an active PostgreSQL + pgvector connection.
-3. **Complex Document Formatting**:
-   - The document parser extracts raw paragraphs and text blocks from `.docx`, `.pptx`, and `.pdf`. Visual clear-space checking for layered vector graphics currently relies on text and slide metadata rather than full rendering engine rasterization.
+1. **Claim Matching Algorithm (Lexical vs Semantic)**:
+   - Claim matching currently uses regex candidate pattern matching and multi-token lexical overlap against the Claim Ledger database. It does **not** use vector embeddings or cosine similarity. Truthfully reported as deterministic lexical matching, not semantic embeddings.
+2. **Visual Review Scope (Mathematical vs Computer Vision)**:
+   - Visual governance is strictly based on mathematical WCAG 2.1 AA luminance contrast calculations on color codes (Rule `A-1`) and alt-text markdown validation (Rule `A-2`). Verity does **not** transmit raster image pixels to Claude Vision or run multimodal image segmentation.
+3. **Multi-Tenant Session Sandboxing**:
+   - Each judge browser receives an isolated organization sandbox (`org_{session_id}`) seeded on-demand via `X-Session-ID`. Resetting demo data impacts only the caller's organization.
+4. **AI Availability & Rate Caps**:
+   - When running without an `ANTHROPIC_API_KEY` or when the `AI_DAILY_CAP` is reached, Claude brand voice review pauses and the app degrades gracefully to deterministic checks with a visible notice badge.
+5. **Document Ingestion Limits**:
+   - In-memory document parsing for `.docx`, `.pptx`, `.pdf`, `.txt`, and `.md` does not store files on disk. Payload sizes are strictly capped at 10 MB. Files exceeding 10 MB or with unsupported extensions are rejected with HTTP 413 and 400.
+

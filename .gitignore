@@ -1,34 +1,48 @@
-# Node
+# Dependencies
 node_modules/
+venv/
+.venv/
+env/
+ENV/
+
+# Production Builds
 .next/
 out/
 build/
 dist/
 
-# Python
+# Python Cache & Artifacts
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.env
-.env.local
-.env.*.local
-venv/
-.venv/
-env/
-ENV/
-*.sqlite
-*.db
 .pytest_cache/
 .coverage
 htmlcov/
 
-# IDE
+# Local Databases (PostgreSQL used in production)
+*.sqlite
+*.sqlite3
+*.db
+verity.db
+
+# Secrets & Environment Files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# Temporary & Uploaded Files
+uploads/
+scratch/
+*.log
+
+# Editor & OS Artifacts
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
 .DS_Store
 Thumbs.db
