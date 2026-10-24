@@ -1,7 +1,7 @@
 import json
 import uuid
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, File, UploadFile, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
@@ -21,6 +21,7 @@ from app.engine.intent_lock import extract_deterministic_intent, validate_rewrit
 from app.engine.privacy_gateway import redact_sensitive_content
 from app.engine.claude_reviewer import review_with_claude
 from app.engine.passport import create_publish_passport
+from app.engine.document_parser import parse_uploaded_file
 
 router = APIRouter(prefix="/submissions", tags=["Submissions & Workflow"])
 
@@ -114,6 +115,32 @@ def create_submission(
         original_text=sub_in.original_text,
         revised_text=sub_in.original_text,
         input_type=sub_in.input_type or "text",
+        intent_json=intent_model.model_dump_json(),
+        status="draft"
+    )
+    db.add(sub)
+    db.commit()
+    db.refresh(sub)
+    return serialize_submission(sub)
+
+@router.post("/upload", response_model=SubmissionRead, status_code=status.HTTP_201_CREATED)
+async def upload_submission_file(
+    file: UploadFile = File(...),
+    title: Optional[str] = Form(None),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    contents = await file.read()
+    extracted_text, detected_type = parse_uploaded_file(file.filename or "upload.txt", contents)
+    doc_title = title or (file.filename.rsplit(".", 1)[0] if file.filename else "Uploaded Document")
+    intent_model = extract_deterministic_intent(extracted_text)
+    sub = Submission(
+        id=f"sub_{uuid.uuid4().hex[:10]}",
+        creator_id=current_user.id,
+        title=doc_title,
+        original_text=extracted_text,
+        revised_text=extracted_text,
+        input_type=detected_type,
         intent_json=intent_model.model_dump_json(),
         status="draft"
     )

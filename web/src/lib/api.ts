@@ -67,6 +67,21 @@ export const api = {
   submissions: {
     create: (data: { title: string; original_text: string; input_type?: string }) =>
       request<any>("/submissions", { method: "POST", body: JSON.stringify(data) }),
+    upload: async (file: File, title?: string) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      if (title) formData.append("title", title);
+      const token = getToken();
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(`${API_URL}/submissions/upload`, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+      if (!res.ok) throw new Error("File upload and parsing failed.");
+      return await res.json();
+    },
     get: (id: string) => request<any>(`/submissions/${id}`),
     analyze: (id: string) => request<any>(`/submissions/${id}/analyze`, { method: "POST" }),
     updateFinding: (findingId: string, decision: "accept" | "reject") =>

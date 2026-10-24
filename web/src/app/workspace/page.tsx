@@ -123,21 +123,36 @@ export default function WorkspacePage() {
     }
   };
 
-  // File Upload Handler (Simulated & Parsed)
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // File Upload Handler (Parses DOCX, PPTX, PDF, and TXT)
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const content = event.target?.result as string;
-      if (content) {
-        setDraftText(content);
-        setTitle(file.name.replace(/\.[^/.]+$/, ""));
-        setStatusMessage(`Loaded file content from: ${file.name}`);
+    setStatusMessage(`Uploading and extracting text from ${file.name}...`);
+    try {
+      const ext = file.name.split(".").pop()?.toLowerCase();
+      if (ext === "docx" || ext === "pptx" || ext === "pdf") {
+        const sub = await api.submissions.upload(file);
+        setDraftText(sub.original_text);
+        setTitle(sub.title);
+        setSubmission(sub);
+        setStatusMessage(`Successfully parsed ${file.name} (${sub.input_type.toUpperCase()} format).`);
+      } else {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const content = event.target?.result as string;
+          if (content) {
+            setDraftText(content);
+            setTitle(file.name.replace(/\.[^/.]+$/, ""));
+            setStatusMessage(`Loaded file content from: ${file.name}`);
+          }
+        };
+        reader.readAsText(file);
       }
-    };
-    reader.readAsText(file);
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      setStatusMessage(`Failed to parse file: ${err.message}`);
+    }
   };
 
   // Filtered findings
