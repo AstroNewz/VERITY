@@ -211,7 +211,7 @@ export default function PassportVerifyPage() {
             className="brutal-btn brutal-btn-pink text-xs py-2 px-4 border-2 flex items-center gap-2 shadow-brutal-sm"
           >
             <AlertTriangle className="w-4 h-4" />
-            <span>{tampering ? "Tampering database..." : "🚨 Simulate Tamper (Owner Action)"}</span>
+            <span>{tampering ? "Tampering database..." : "Simulate Tamper (Owner Action)"}</span>
           </button>
 
           {!isValid && (
@@ -222,7 +222,7 @@ export default function PassportVerifyPage() {
               className="brutal-btn brutal-btn-mint text-xs py-2 px-4 border-2 flex items-center gap-2 shadow-brutal-sm"
             >
               <RotateCcw className="w-4 h-4" />
-              <span>{restoring ? "Restoring original..." : "✅ Restore Approved Copy (Reset)"}</span>
+              <span>{restoring ? "Restoring original..." : "Restore Approved Copy (Reset)"}</span>
             </button>
           )}
         </div>

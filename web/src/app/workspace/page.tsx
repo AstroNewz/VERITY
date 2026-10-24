@@ -21,7 +21,8 @@ import {
   CheckSquare, 
   RefreshCw,
   Eye,
-  ShieldCheck
+  ShieldCheck,
+  PauseCircle
 } from "lucide-react";
 
 export default function WorkspacePage() {
@@ -193,9 +194,15 @@ export default function WorkspacePage() {
           }`}
         >
           <div className="flex items-center gap-2">
-            <span className="text-base">
-              {submission.ai_status === "active" ? "✨" : submission.ai_status === "daily_cap_exceeded" ? "⏸️" : "⚠️"}
-            </span>
+            <div className="shrink-0">
+              {submission.ai_status === "active" ? (
+                <Sparkles className="w-4 h-4 text-emerald-800 stroke-[2.5]" />
+              ) : submission.ai_status === "daily_cap_exceeded" ? (
+                <PauseCircle className="w-4 h-4 text-white stroke-[2.5]" />
+              ) : (
+                <AlertTriangle className="w-4 h-4 text-ink stroke-[2.5]" />
+              )}
+            </div>
             <span>
               {submission.ai_status === "active"
                 ? `Groq AI Active (${submission.ai_model || "Llama 3.3 70B"}): Multi-agent intent preservation & voice tone checks enabled.`
@@ -322,15 +329,23 @@ export default function WorkspacePage() {
 
                 {submission.intent && (
                   <span
-                    className={`brutal-chip text-[10px] ${
+                    className={`brutal-chip text-[10px] flex items-center gap-1 font-bold ${
                       submission.intent.status === "locked"
                         ? "bg-mint text-ink border-ink"
                         : "bg-danger text-white border-ink"
                     }`}
                   >
-                    {submission.intent.status === "locked"
-                      ? "✓ INTENT PRESERVED"
-                      : "⚠ INTENT AT RISK"}
+                    {submission.intent.status === "locked" ? (
+                      <>
+                        <CheckCircle2 className="w-3 h-3 stroke-[2.5]" />
+                        <span>INTENT PRESERVED</span>
+                      </>
+                    ) : (
+                      <>
+                        <AlertTriangle className="w-3 h-3 stroke-[2.5]" />
+                        <span>INTENT AT RISK</span>
+                      </>
+                    )}
                   </span>
                 )}
               </div>

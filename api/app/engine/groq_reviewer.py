@@ -36,13 +36,6 @@ def review_with_groq(
     Returns: (findings_list, ai_used_bool, ai_model_str)
     """
     if not settings.GROQ_API_KEY:
-        # Check if legacy Anthropic key is present as fallback
-        if settings.ANTHROPIC_API_KEY:
-            try:
-                from app.engine.claude_reviewer import _call_claude_fallback
-                return _call_claude_fallback(sanitized_text, original_text, token_map)
-            except Exception:
-                pass
         logger.info("GROQ_API_KEY not configured. Falling back to deterministic review.")
         return [], False, "offline_fallback"
 

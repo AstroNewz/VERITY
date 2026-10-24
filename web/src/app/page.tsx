@@ -32,8 +32,8 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="text-left space-y-6 max-w-4xl">
         <div className="inline-block transform -rotate-1">
-          <span className="brutal-badge bg-yellow text-ink border-3 text-xs sm:text-sm px-3 py-1 shadow-brutal-btn">
-            ★ CODEAXIS ROUND 2 — TEAM BRAKET ★
+          <span className="brutal-badge bg-yellow text-ink border-3 text-xs sm:text-sm px-3 py-1 shadow-brutal-btn font-mono font-bold">
+            CODEAXIS ROUND 2 // TEAM BRAKET
           </span>
         </div>
 

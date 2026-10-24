@@ -131,8 +131,8 @@ docker compose up --build
 
 | Variable | Target | Default | Description |
 |---|---|---|---|
-| `GROQ_API_KEY` | API | `""` | **Groq API Key** for ultra-fast Llama 3.3 70B brand voice inference |
-| `GROQ_MODEL` | API | `llama-3.3-70b-versatile` | Groq model identifier |
+| `GROQ_API_KEY` | API | `""` | **Groq API Key** for ultra-fast high-parameter brand voice inference |
+| `GROQ_MODEL` | API | `openai/gpt-oss-120b` | Groq model identifier (e.g. `openai/gpt-oss-120b` or `llama-3.3-70b-versatile`) |
 | `DATABASE_URL` | API | `sqlite:///./verity.db` | PostgreSQL connection string (Supabase/Neon in prod) or SQLite for local dev |
 | `JWT_SECRET` | API | `verity-super-secret-jwt-key` | Secret key for signing role-based session tokens |
 | `AI_DAILY_CAP` | API | `150` | Global daily quota cap to enforce predictable API spend |

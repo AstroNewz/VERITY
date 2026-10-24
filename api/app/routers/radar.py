@@ -92,7 +92,7 @@ def draft_clarified_clause(
     if not rule:
         raise HTTPException(status_code=404, detail="Rule not found")
 
-    # If Anthropic Claude is available, call it; otherwise return high quality deterministic drafting
+    # If Groq is available, call it; otherwise return high quality deterministic drafting
     proposal = {
         "rule_id": rule.id,
         "proposed_title": f"{rule.title} (Clarified)",

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { DemoPost } from "@/lib/types";
 import { api } from "@/lib/api";
-import { Sparkles, ChevronDown, CheckCircle2, AlertTriangle, ShieldCheck } from "lucide-react";
+import { Sparkles, ChevronDown, CheckCircle2, AlertTriangle, ShieldCheck, Zap } from "lucide-react";
 
 interface DemoLoaderProps {
   onSelectPost: (post: DemoPost) => void;
@@ -53,9 +53,10 @@ export default function DemoLoader({ onSelectPost, selectedPostId }: DemoLoaderP
           <button
             type="button"
             onClick={() => posts.length > 0 && onSelectPost(posts[0])}
-            className="brutal-btn brutal-btn-white text-xs py-1.5 px-3 border-2"
+            className="brutal-btn brutal-btn-white text-xs py-1.5 px-3 border-2 flex items-center gap-1.5 font-bold"
           >
-            ⚡ Load Demo Post #1
+            <Zap className="w-3.5 h-3.5 fill-current" />
+            <span>Load Demo Post #1</span>
           </button>
 
           {/* Dropdown for all 6 presets */}

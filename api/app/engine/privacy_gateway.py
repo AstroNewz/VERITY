@@ -50,7 +50,7 @@ def redact_sensitive_content(text: str, db: Session, org_id: str = "org_novafest
 
 def restore_tokens(text: str, token_map: Dict[str, str]) -> str:
     """
-    Reconstructs original tokens inside Claude suggestions or responses.
+    Reconstructs original tokens inside LLM / Groq suggestions or responses.
     """
     restored = text
     for token, original in token_map.items():

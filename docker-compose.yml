@@ -12,8 +12,7 @@ services:
       - DATABASE_URL=sqlite:///./verity.db
       - JWT_SECRET=verity-super-secret-jwt-key-braket-2026
       - GROQ_API_KEY=${GROQ_API_KEY:-}
-      - GROQ_MODEL=${GROQ_MODEL:-llama-3.3-70b-versatile}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GROQ_MODEL=${GROQ_MODEL:-openai/gpt-oss-120b}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s

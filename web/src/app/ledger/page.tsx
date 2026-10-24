@@ -13,7 +13,8 @@ import {
   Plus, 
   ShieldAlert, 
   Lock,
-  ArrowRight
+  ArrowRight,
+  X
 } from "lucide-react";
 
 export default function LedgerPage() {
@@ -253,9 +254,10 @@ export default function LedgerPage() {
               <button
                 type="button"
                 onClick={() => setShowAddModal(false)}
-                className="font-mono font-bold text-lg hover:text-gray-600"
+                className="p-1 hover:bg-gray-100 border border-transparent hover:border-ink"
+                aria-label="Close modal"
               >
-                ✕
+                <X className="w-5 h-5 stroke-[2.5]" />
               </button>
             </div>
 

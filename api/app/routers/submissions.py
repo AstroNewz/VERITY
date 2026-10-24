@@ -19,7 +19,7 @@ from app.engine.deterministic import run_deterministic_checks
 from app.engine.claim_ledger import check_claim_ledger
 from app.engine.intent_lock import extract_deterministic_intent, validate_rewrite_intent
 from app.engine.privacy_gateway import redact_sensitive_content
-from app.engine.claude_reviewer import review_with_claude
+from app.engine.groq_reviewer import review_with_groq
 from app.engine.passport import create_publish_passport
 from app.engine.document_parser import parse_uploaded_file
 
@@ -211,7 +211,7 @@ def analyze_submission(
     claim_findings = check_claim_ledger(text, db, org_id=org_id)
     findings_raw.extend(claim_findings)
 
-    # 3. Privacy Gateway Sanitization (sits ONLY in front of Claude calls)
+    # 3. Privacy Gateway Sanitization (sits ONLY in front of external LLM / Groq calls)
     sanitized_text, token_map, redactions_count = redact_sensitive_content(text, db, org_id=org_id)
 
     # 4. Check Global AI Daily Cap
@@ -225,7 +225,7 @@ def analyze_submission(
 
     ai_findings = []
     ai_used = False
-    ai_model = settings.GROQ_MODEL if settings.GROQ_API_KEY else settings.CLAUDE_MODEL
+    ai_model = settings.GROQ_MODEL
     ai_status = "offline_fallback"
     ai_notice = None
 
@@ -233,8 +233,8 @@ def analyze_submission(
         ai_status = "daily_cap_exceeded"
         ai_notice = "AI review paused for today (Daily Cap Exceeded). Running deterministic checks."
     else:
-        # 5. Groq / LLM Brand Voice Review
-        ai_findings, ai_used, ai_model = review_with_claude(sanitized_text, text, token_map)
+        # 5. Groq AI Brand Voice Review
+        ai_findings, ai_used, ai_model = review_with_groq(sanitized_text, text, token_map)
         findings_raw.extend(ai_findings)
         if ai_used:
             ai_status = "active"

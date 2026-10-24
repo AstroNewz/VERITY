@@ -12,7 +12,9 @@ import {
   ArrowRight, 
   ShieldAlert, 
   RefreshCw,
-  GitBranch
+  GitBranch,
+  Check,
+  X
 } from "lucide-react";
 
 export default function RadarPage() {
@@ -142,11 +144,15 @@ export default function RadarPage() {
 
                     <div className="grid grid-cols-1 gap-2 pt-2 border-t border-gray-300">
                       <div className="p-1.5 bg-mint-light border border-mint-dark text-[11px]">
-                        <span className="font-bold text-emerald-800 uppercase block">✓ Allowed Example:</span>
+                        <span className="font-bold text-emerald-800 uppercase flex items-center gap-1 mb-0.5">
+                          <Check className="w-3 h-3 stroke-[3]" /> Allowed Example:
+                        </span>
                         <span>"{item.example_allowed}"</span>
                       </div>
                       <div className="p-1.5 bg-danger-light border border-danger text-[11px]">
-                        <span className="font-bold text-danger uppercase block">✗ Banned Example:</span>
+                        <span className="font-bold text-danger uppercase flex items-center gap-1 mb-0.5">
+                          <X className="w-3 h-3 stroke-[3]" /> Banned Example:
+                        </span>
                         <span>"{item.example_banned}"</span>
                       </div>
                     </div>

@@ -261,8 +261,18 @@ export default function ApprovalsPage() {
                       Revised Copy (Proposed for Approval):
                     </span>
                     {selectedSub.intent && (
-                      <span className="text-[9px] font-mono font-bold px-1 bg-white border border-ink text-emerald-950">
-                        {selectedSub.intent.status === "locked" ? "✓ Intent Kept" : "⚠ Intent At Risk"}
+                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 bg-white border border-ink text-emerald-950 inline-flex items-center gap-1">
+                        {selectedSub.intent.status === "locked" ? (
+                          <>
+                            <CheckCircle className="w-3 h-3 text-emerald-700 stroke-[2.5]" />
+                            <span>INTENT KEPT</span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertCircle className="w-3 h-3 text-coral stroke-[2.5]" />
+                            <span>INTENT AT RISK</span>
+                          </>
+                        )}
                       </span>
                     )}
                   </div>

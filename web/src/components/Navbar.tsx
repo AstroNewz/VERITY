@@ -110,7 +110,7 @@ export default function Navbar() {
       {isWakingServer && (
         <div className="bg-coral text-white py-2 px-4 text-xs font-mono font-bold flex items-center justify-between border-b-2 border-ink animate-pulse">
           <div className="flex items-center gap-2">
-            <span className="animate-spin text-sm">⏳</span>
+            <Activity className="w-4 h-4 animate-spin stroke-[2.5]" />
             <span>Waking the server, this can take up to a minute (Render / Cloud Spin-Up)...</span>
           </div>
           <span className="text-[10px] uppercase tracking-wider bg-ink text-white px-2 py-0.5 border border-white">

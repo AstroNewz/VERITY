@@ -54,9 +54,15 @@ export default function AILogsPage() {
         </p>
 
         <div className="flex flex-wrap gap-2 pt-1 font-mono text-xs">
-          <span className="brutal-chip bg-mint text-ink">✓ NO RAW PII SENT TO LLMs</span>
-          <span className="brutal-chip bg-yellow text-ink">✓ PROMPT-INJECTION SAFE DELIMITERS</span>
-          <span className="brutal-chip bg-white text-ink">✓ AUDITABLE PER-REQUEST LOGS</span>
+          <span className="brutal-chip bg-mint text-ink flex items-center gap-1.5 font-bold">
+            <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" /> NO RAW PII SENT TO LLMs
+          </span>
+          <span className="brutal-chip bg-yellow text-ink flex items-center gap-1.5 font-bold">
+            <Lock className="w-3.5 h-3.5 stroke-[2.5]" /> PROMPT-INJECTION SAFE DELIMITERS
+          </span>
+          <span className="brutal-chip bg-white text-ink flex items-center gap-1.5 font-bold">
+            <Cpu className="w-3.5 h-3.5 stroke-[2.5]" /> AUDITABLE PER-REQUEST LOGS
+          </span>
         </div>
       </div>
 

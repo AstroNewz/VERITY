@@ -9,7 +9,7 @@
 
 ## 1. System Architecture & Order of Operations
 
-The Verity Governance Pipeline enforces a strict order of operations: all deterministic, confidential-term, and claim-ledger checks run on the **raw unredacted text** first. The Privacy Gateway sits strictly in front of external LLM (Claude) calls, shielding PII and confidential project codenames before external transit, then restores real codenames server-side.
+The Verity Governance Pipeline enforces a strict order of operations: all deterministic, confidential-term, and claim-ledger checks run on the **raw unredacted text** first. The Privacy Gateway sits strictly in front of external LLM (Groq) calls, shielding PII and confidential project codenames before external transit, then restores real codenames server-side.
 
 ```mermaid
 graph TD
@@ -23,8 +23,8 @@ graph TD
         RawText --> LedgerMatch[3. Claim Ledger: Regex Extraction & Substring/Lexical Overlap against Ledger F-1..F-3]
         
         RawText --> PrivacyGW[4. Privacy Gateway: Redact PII & Confidential Terms -> [CONFIDENTIAL_PROJECT_1]]
-        PrivacyGW --> ClaudeAI[5. Claude AI (CLAUDE_MODEL): Nuanced Voice, Tone & Intent Lock Analysis]
-        ClaudeAI --> Restorer[6. Token Restorer: Restore Real Codenames in Suggested Fixes]
+        PrivacyGW --> GroqAI[5. Groq AI (GROQ_MODEL): Nuanced Voice, Tone & Intent Lock Analysis]
+        GroqAI --> Restorer[6. Token Restorer: Restore Real Codenames in Suggested Fixes]
     end
 
     subgraph Storage [Isolated Multi-Tenant Ledger]
@@ -47,14 +47,14 @@ graph TD
 ## 2. Directory Structure & Key Files
 
 - `/api`:
-  - `app/config.py`: Environment configuration reading `DATABASE_URL`, `CLAUDE_MODEL`, `AI_DAILY_CAP`, `JWT_SECRET`.
+  - `app/config.py`: Environment configuration reading `DATABASE_URL`, `GROQ_MODEL`, `AI_DAILY_CAP`, `JWT_SECRET`.
   - `app/engine/deterministic.py`: Raw-text terminology, tone hygiene, confidential terms, WCAG AA contrast ratio calculator.
   - `app/engine/claim_ledger.py`: Raw-text claim regex detectors & status categorizer (Verified, Expired, Expires Soon, Unsupported).
   - `app/engine/intent_lock.py`: Creator intent extractor and continuous rewrite validator.
   - `app/engine/passport.py`: Canonical SHA-256 Publish Passport generator and tamper-detection verifier.
-  - `app/engine/privacy_gateway.py`: PII and confidential terms tokenizer with memory-safe token restoration (sits only in front of Claude calls).
+  - `app/engine/privacy_gateway.py`: PII and confidential terms tokenizer with memory-safe token restoration (sits only in front of Groq calls).
   - `app/engine/document_parser.py`: Multi-format text extractor for DOCX, PPTX, PDF, and TXT with 10 MB payload enforcement.
-  - `app/engine/claude_reviewer.py`: Anthropic Claude brand voice reviewer with exact substring validation and offline fallback degradation.
+  - `app/engine/groq_reviewer.py`: High-speed Groq brand voice reviewer with exact substring validation and offline fallback degradation.
   - `app/routers/`: Versioned API endpoints (`/auth`, `/rules`, `/ledger`, `/submissions`, `/findings`, `/passports`, `/radar`, `/insights`, `/ai-logs`).
   - `tests/`: 12 pytest unit tests covering all engine modules, document parsers, and tamper verification.
 - `/web`:
