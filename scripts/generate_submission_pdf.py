@@ -150,26 +150,31 @@ def generate_pdf(output_path: str):
     story.append(Paragraph("1. WORKING PROJECT & REPOSITORY DELIVERABLES", h1_style))
     
     links_data = [
-        [Paragraph("<b>DELIVERABLE</b>", body_bold), Paragraph("<b>LIVE URL / REFERENCE</b>", body_bold), Paragraph("<b>OPERATIONAL STATUS</b>", body_bold)],
+        [Paragraph("<b>DELIVERABLE</b>", body_bold), Paragraph("<b>LIVE URL / REFERENCE</b>", body_bold), Paragraph("<b>OPERATIONAL STATUS & NOTES</b>", body_bold)],
+        [
+            Paragraph("<b>Primary Working Project</b><br/>(Custom Domain)", body_style),
+            Paragraph("<b>https://www.cosmicboom.xyz</b>", code_style),
+            Paragraph("<b>ONLINE (Vercel Edge)</b><br/>Custom domain with SSL", body_style)
+        ],
+        [
+            Paragraph("<b>Direct Mirror Link</b><br/>(Vercel Native Domain)", body_style),
+            Paragraph("<b>https://verity-brand-governance.vercel.app</b>", code_style),
+            Paragraph("<b>ONLINE & DIRECT</b><br/>Instant access fallback", body_style)
+        ],
         [
             Paragraph("<b>Source-Code Repository Link</b>", body_style),
             Paragraph("<b>https://github.com/AstroNewz/VERITY</b><br/><code>git clone https://github.com/AstroNewz/VERITY.git</code>", code_style),
             Paragraph("<b>PUBLIC & SYNCED</b><br/>Branches: main, master", body_style)
         ],
         [
-            Paragraph("<b>Web Frontend (Next.js 14)</b>", body_style),
-            Paragraph("<b>https://verity-brand-governance.vercel.app</b><br/>Local: <code>http://localhost:3000</code>", code_style),
-            Paragraph("<b>ONLINE (Vercel)</b><br/>11/11 routes prerendered", body_style)
-        ],
-        [
             Paragraph("<b>Backend API (FastAPI)</b>", body_style),
             Paragraph("<b>https://verity-api.onrender.com</b><br/>Local: <code>http://localhost:8000/docs</code>", code_style),
-            Paragraph("<b>ONLINE (Render Docker)</b><br/>Health: <code>/health</code> 200 OK", body_style)
+            Paragraph("<b>ONLINE (Render Docker)</b><br/>Uptime: 24/7 keepalive pinged", body_style)
         ],
         [
             Paragraph("<b>Public Verification Engine</b>", body_style),
-            Paragraph("<b>https://verity-brand-governance.vercel.app/verify/pass_sub_demo_1</b>", code_style),
-            Paragraph("<b>LIVE VERIFIER</b><br/>Live SHA-256 check", body_style)
+            Paragraph("<b>https://www.cosmicboom.xyz/verify/pass_sub_demo_1</b><br/>(Mirror: <code>verity-brand-governance.vercel.app/verify/...</code>)", code_style),
+            Paragraph("<b>LIVE VERIFIER</b><br/>Interactive SHA-256 tamper test", body_style)
         ],
     ]
     t_links = Table(links_data, colWidths=[2.0 * inch, 3.8 * inch, 1.5 * inch])
@@ -183,6 +188,27 @@ def generate_pdf(output_path: str):
         ('RIGHTPADDING', (0,0), (-1,-1), 6),
     ]))
     story.append(t_links)
+    story.append(Spacer(1, 6))
+
+    # Dual-Link & Cold-Start Justification Box
+    callout_perf = [
+        [Paragraph(
+            "<b>EVALUATION ACCESSIBILITY & RESPONSE TIME TRANSPARENCY (JUDGE NOTE):</b><br/>"
+            "• <b>Dual Links:</b> Verity is accessible via both its custom domain (<b>https://www.cosmicboom.xyz</b>) and its native Vercel domain (<b>https://verity-brand-governance.vercel.app</b>). If local ISP recursive DNS caches experience propagation latency on the custom domain, judges can immediately open the native Vercel link for zero-latency evaluation.<br/>"
+            "• <b>Cloud Container Spin-Up:</b> Free cloud containers (Render) hibernate after 15 minutes of inactivity; an initial wake-up takes ~30–45s before returning to sub-second (&lt;300ms) execution. To guarantee seamless evaluation, we have automated 10-minute keepalive pings via cron-job.org and embedded an on-screen cold-start detector in the navbar.",
+            body_style
+        )]
+    ]
+    t_perf = Table(callout_perf, colWidths=[7.3 * inch])
+    t_perf.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), CREAM),
+        ('BOX', (0,0), (-1,-1), 1.5, INK),
+        ('TOPPADDING', (0,0), (-1,-1), 5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 5),
+        ('LEFTPADDING', (0,0), (-1,-1), 8),
+        ('RIGHTPADDING', (0,0), (-1,-1), 8),
+    ]))
+    story.append(t_perf)
     story.append(Spacer(1, 8))
 
     # --- 2. LIST OF COMPLETED FEATURES ---
@@ -255,6 +281,15 @@ def generate_pdf(output_path: str):
             Paragraph("<b>8. Multi-Tenant Session Sandboxing</b>", body_bold),
             Paragraph(
                 "• Each judge browser receives an isolated organization sandbox (`org_{session_id}`) seeded on-demand via `X-Session-ID`. Resetting demo data impacts only the caller's organization.",
+                body_style
+            )
+        ],
+        [
+            Paragraph("<b>9. Self-Guided Tutorial Walkthrough</b>", body_bold),
+            Paragraph(
+                "• <b>Zero-Assistance Judge Tour:</b> Multi-track interactive walkthrough (Creator, Reviewer, Brand Owner, All) with 21 granular steps.<br/>"
+                "• <b>Translucent Spotlight Cutout:</b> Shaded `rgba(17,17,17,0.80)` veil with yellow bounding ring framing targeted buttons and inputs.<br/>"
+                "• <b>Why This Matters & How to Test:</b> Every step explains core platform differentiators so judges understand the value without a presenter.",
                 body_style
             )
         ]
@@ -443,7 +478,14 @@ def generate_pdf(output_path: str):
     print(f"PDF generated successfully at: {output_path}")
 
 if __name__ == "__main__":
-    out_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "docs"))
-    os.makedirs(out_dir, exist_ok=True)
-    target = os.path.join(out_dir, "Verity_Round2_Submission_Report.pdf")
-    generate_pdf(target)
+    import shutil
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    docs_dir = os.path.join(root_dir, "docs")
+    os.makedirs(docs_dir, exist_ok=True)
+    
+    docs_target = os.path.join(docs_dir, "Verity_Round2_Submission_Report.pdf")
+    root_target = os.path.join(root_dir, "Verity_Round2_Submission_Report.pdf")
+    
+    generate_pdf(docs_target)
+    shutil.copyfile(docs_target, root_target)
+    print(f"Copied PDF to root: {root_target}")

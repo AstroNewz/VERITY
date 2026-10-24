@@ -31,18 +31,19 @@ BRAND GOVERNANCE PLATFORM // CODEAXIS ROUND 2 // TEAM BRAKET
 ### QUICK NAVIGATION
 
 - [01 // The Manifesto](#-01--the-manifesto)
-- [02 // Live Deployment & Endpoints](#-02--live-deployment--endpoints)
+- [02 // Live Deployment & Endpoints](#-02--live-deployment--dual-link-redundancy)
 - [03 // System Architecture & Order of Operations](#-03--system-architecture--order-of-operations)
 - [04 // The 6 Pillars of Verity](#-04--the-6-pillars-of-verity)
 - [05 // Android & Mobile Optimization](#-05--android--mobile-optimization)
 - [06 // Dual-Set Accuracy Benchmark](#-06--dual-set-accuracy-benchmark)
-- [07 // Judge Demo Walkthrough (6 Presets)](#-07--judge-demo-walkthrough-6-presets)
-- [08 // Run Locally in 3 Commands](#-08--run-locally-in-3-commands)
-- [09 // Environment Variables](#-09--environment-variables)
-- [10 // Visual Showcase](#-10--visual-showcase)
-- [11 // Monorepo Tree](#-11--monorepo-tree)
-- [12 // Transparent Known Limitations](#-12--transparent-known-limitations)
-- [13 // Team BraKet](#-13--team-braket)
+- [07 // Self-Guided Tutorial Mode & How It Works](#-07--self-guided-tutorial-mode--how-it-works)
+- [08 // Judge Demo Walkthrough (6 Presets)](#-08--judge-demo-walkthrough-6-presets)
+- [09 // Run Locally in 3 Commands](#-09--run-locally-in-3-commands)
+- [10 // Environment Variables](#-10--environment-variables)
+- [11 // Visual Showcase](#-11--visual-showcase)
+- [12 // Monorepo Tree](#-12--monorepo-tree)
+- [13 // Transparent Known Limitations](#-13--transparent-known-limitations)
+- [14 // Team BraKet](#-14--team-braket)
 
 ---
 
@@ -73,19 +74,31 @@ Traditional AI linters, grammar tools, and generic LLM prompts produce vague, su
 
 ---
 
-## 🌐 02 // LIVE DEPLOYMENT & ENDPOINTS
+## 🌐 02 // LIVE DEPLOYMENT & DUAL-LINK REDUNDANCY
 
-| Component | Target Platform | Public URL | Telemetry Status |
+| Component | Target Platform | Public URL | Telemetry Status & Notes |
 |---|---|---|---|
-| **Web Frontend** | Custom Domain / Vercel Edge | [https://www.cosmicboom.xyz](https://www.cosmicboom.xyz) | **LIVE // HTTP 200** |
-| **Vercel Mirror** | Vercel Serverless | [https://verity-brand-governance.vercel.app](https://verity-brand-governance.vercel.app) | **LIVE // HTTP 200** |
-| **Backend API** | Render (Docker / FastAPI) | [https://verity-api.onrender.com](https://verity-api.onrender.com) | **HEALTHY** |
-| **API Health Ping** | REST Endpoint | [https://verity-api.onrender.com/health](https://verity-api.onrender.com/health) | `{"status":"healthy"}` |
-| **Interactive Docs** | OpenAPI / Swagger | [https://verity-api.onrender.com/docs](https://verity-api.onrender.com/docs) | **INTERACTIVE** |
-| **Monorepo** | GitHub Public | [https://github.com/AstroNewz/VERITY.git](https://github.com/AstroNewz/VERITY.git) | **SYNCED** |
+| **Primary Web Frontend** | Custom Domain / Vercel Edge | [https://www.cosmicboom.xyz](https://www.cosmicboom.xyz) | **LIVE // HTTP 200** (Full SSL) |
+| **Direct Vercel Mirror** | Vercel Native Deployment | [https://verity-brand-governance.vercel.app](https://verity-brand-governance.vercel.app) | **LIVE // HTTP 200** (Instant Fallback) |
+| **Backend API** | Render (Docker / FastAPI) | [https://verity-api.onrender.com](https://verity-api.onrender.com) | **HEALTHY** (24/7 Keepalive Active) |
+| **API Health Ping** | REST Endpoint | [https://verity-api.onrender.com/](https://verity-api.onrender.com/) | `{"status":"Verity API is running"}` |
+| **Interactive Docs** | OpenAPI / Swagger | [https://verity-api.onrender.com/docs](https://verity-api.onrender.com/docs) | **INTERACTIVE SWAGGER** |
+| **Monorepo** | GitHub Public | [https://github.com/AstroNewz/VERITY.git](https://github.com/AstroNewz/VERITY.git) | **SYNCED (main & master)** |
 | **Submission PDF**| Final Project Report | [Verity_Round2_Submission_Report.pdf](Verity_Round2_Submission_Report.pdf) | **DOWNLOADABLE** |
+| **Presentation Deck**| Slide-by-Slide PPT Text | [docs/ROUND2_PRESENTATION_DECK.md](docs/ROUND2_PRESENTATION_DECK.md) | **10 SLIDES WITH NOTES** |
 
-> **COLD-START RESILIENCE:** Render free-tier containers hibernate when idle. The frontend includes a graceful cold-start notice (`"Waking the server, this can take up to a minute"`) and pings `/health` every 10 minutes to maintain persistent availability.
+### 💡 Evaluator Note: Dual Links & Response Time Transparency
+
+> **1. Dual-Link Redundancy for 100% Evaluation Uptime:**  
+> Verity is served concurrently on both our custom domain ([https://www.cosmicboom.xyz](https://www.cosmicboom.xyz)) and our native Vercel mirror ([https://verity-brand-governance.vercel.app](https://verity-brand-governance.vercel.app)).  
+> *Why both links are provided:* If a judge's local corporate proxy, mobile network, or university ISP experiences recursive DNS cache latency resolving the custom `.xyz` domain, the native Vercel domain provides immediate, zero-latency access with identical functionality. Both domains point to the same live production codebase.
+>
+> **2. Cloud Spin-Up / Cold Boot Explanation:**  
+> Free-tier cloud containers on Render hibernate after **15 minutes** of inactivity to conserve resources. When a hibernating server receives its first request, pulling the container and booting Uvicorn takes **30–45 seconds**. Once awake, all governance checks execute in **sub-second time (<300ms)**.  
+> *How we solved this:*  
+> - **24/7 Keepalive Ping:** Automated heartbeat requests ping `https://verity-api.onrender.com/` every **10 minutes** via `cron-job.org` so the container stays warm.  
+> - **In-App Client Ping:** The frontend pings the health endpoint on tab focus.  
+> - **Cold-Start Visual Detector:** If an initial cold boot is underway, an animated notice banner in the header alerts the visitor: *"Waking the server, this can take up to a minute (Render / Cloud Spin-Up)... Cold Start Detected"*.
 
 ---
 
@@ -193,7 +206,47 @@ python scripts/run_accuracy_check.py
 
 ---
 
-## 🎯 07 // JUDGE DEMO WALKTHROUGH (6 PRESETS)
+## 🧭 07 // SELF-GUIDED TUTORIAL MODE & HOW IT WORKS
+
+To satisfy **Round 2 Evaluation Criterion #5: Usability (Judges must be able to understand and use the functioning part of the product without guidance)**, Verity incorporates an interactive, in-situ **Neo-Brutalist Tour Guide Engine**.
+
+Because team members cannot be present during the judging evaluation session, this self-guided tutorial acts as a continuous virtual companion that spotlights key controls, explains why each step matters, and shows judges exactly how to test every feature.
+
+### 🌟 Tour Architecture & Visual Spotlight
+- **Translucent Black Backdrop (`bg-ink/80` with `backdrop-blur-sm`)**: Dimming background UI elements focuses 100% of the evaluator's attention on the active control.
+- **High-Contrast Yellow Spotlight Box**: The highlighted element is encased in a dynamic Neo-Brutalist border (`ring-4 ring-ink ring-offset-2 shadow-[0_0_0_9999px_rgba(17,17,17,0.80)]`), ensuring zero visual ambiguity.
+- **Smart Dual-Side Positioning**: Tooltips automatically detect viewport boundaries on mobile and desktop, floating gracefully above, below, or beside targets without obscuring inputs.
+- **Contextual Knowledge Cards**: Every step provides:
+  - **Step Counter & Role Badge**: e.g., `STEP 2 OF 7 // CREATOR TRACK`.
+  - **Core Explanation**: What this button or panel does.
+  - **"Why This Matters" Differentiator**: How Verity differs from traditional linters (e.g., citing rules vs. generic tone feedback, cryptographically signed passports vs. verbal sign-off).
+  - **"How to Test" Hint**: Practical action to trigger immediately (e.g., *"Click '1-Click Revise Copy' to view the intent-preserving fix"*).
+  - **Skip & Navigation Controls**: Evaluators can skip at any time or step backward/forward.
+
+---
+
+### 🎭 The 4 Role-Based Guided Tracks
+
+| Track | Target Persona | Step Count | Primary Route | Key Features Covered |
+|---|---|---|---|---|
+| **All Roles Complete Tour** | Evaluators / Architects | 21 Steps | Full System Tour (`/` $\rightarrow$ `/workspace` $\rightarrow$ `/approvals` $\rightarrow$ `/verify` $\rightarrow$ `/ledger` $\rightarrow$ `/constitution` $\rightarrow$ `/radar`) | Complete end-to-end journey from raw drafting, deterministic & AI checks, approval diffs, cryptographic passport creation, tamper verification, Claim Ledger, Brand Constitution, and Health Radar. |
+| **Creator Track** | Content Creators / Marketers | 7 Steps | `/workspace` | Role Selector, Preset Pickers, Rule Citation Inspector, Intent Lock Revisions, Privacy Gateway Redaction, and Submitting to Reviewer. |
+| **Reviewer Track** | Brand Managers / Legal Reviewers | 6 Steps | `/approvals` | Pending Approvals Queue, Side-by-Side Visual Diff, Creator Citation Audit, Editorial Notes Drawer, and Cryptographic Publish Passport Sign-Off. |
+| **Brand Owner Track** | CMOs / Brand Directors / Policy Leads | 8 Steps | `/verify/:id`, `/ledger`, `/constitution`, `/radar` | Cryptographic Passport SHA-256 Verification, Live Owner Tamper Simulator, Claim Ledger Expiry Tracking, Live Constitution Scoped Toggles, and Guideline Health Radar Rule Re-drafting. |
+
+---
+
+### 🚀 How to Launch the Tutorial
+
+Evaluators can launch any tutorial track from multiple prominent touchpoints:
+1. **Home Page Hero Banner (`/`)**: Click any of the 4 track buttons (*"All Roles Complete Tour"*, *"Creator Track"*, *"Reviewer Track"*, or *"Brand Owner Track"*).
+2. **Home Page Role Cards (`/`)**: Each persona card features a direct launch link: `▶ Take Creator Tour`, `▶ Take Reviewer Tour`, `▶ Take Brand Owner Tour`.
+3. **Top Navigation Bar (`Header`)**: Click the high-contrast `Tour Guide` button in the navigation header at any time. It automatically starts the track corresponding to your currently selected role.
+4. **Contextual In-Page Callouts**: Every major page (`/workspace`, `/approvals`, `/constitution`, `/ledger`, `/radar`) includes a banner allowing judges to launch that page's specific guided walkthrough with a single click.
+
+---
+
+## 🎯 08 // JUDGE DEMO WALKTHROUGH (6 PRESETS)
 
 Test all core capabilities in the **Workspace** (`/workspace`) with pre-seeded 1-click presets:
 
@@ -208,7 +261,7 @@ Test all core capabilities in the **Workspace** (`/workspace`) with pre-seeded 1
 
 ---
 
-## 🚀 08 // RUN LOCALLY IN 3 COMMANDS
+## 🚀 09 // RUN LOCALLY IN 3 COMMANDS
 
 ### Option A: Native Monorepo Run
 
@@ -239,7 +292,7 @@ docker compose up --build
 
 ---
 
-## ⚙️ 09 // ENVIRONMENT VARIABLES
+## ⚙️ 10 // ENVIRONMENT VARIABLES
 
 Create a `.env` file in `api/` and `web/` based on the templates:
 
@@ -260,7 +313,7 @@ NEXT_PUBLIC_API_URL=https://verity-api.onrender.com
 
 ---
 
-## 📸 10 // VISUAL SHOWCASE
+## 📸 11 // VISUAL SHOWCASE
 
 ### A. Landing Page & Zero-Setup Role Switcher
 Select your role (*Creator*, *Reviewer*, *Brand Owner*) with one click.
@@ -284,7 +337,7 @@ Simulating an unauthorized database mutation instantly exposes the tamper in red
 
 ---
 
-## 📂 11 // MONOREPO TREE
+## 📂 12 // MONOREPO TREE
 
 ```
 VERITY/
@@ -319,7 +372,7 @@ VERITY/
 
 ---
 
-## ⚠️ 12 // TRANSPARENT KNOWN LIMITATIONS
+## ⚠️ 13 // TRANSPARENT KNOWN LIMITATIONS
 
 1. **Claim Matching Scope (Lexical vs Semantic)**:
    - Claim candidate extraction uses regex patterns (counts, rankings, percentages, pricing). Matching against ledger records uses exact substring containment and multi-token lexical overlap. It does **not** use dense vector embeddings. Truthfully reported as deterministic lexical matching.
@@ -334,7 +387,7 @@ VERITY/
 
 ---
 
-## 👥 13 // TEAM BRAKET
+## 👥 14 // TEAM BRAKET
 
 - **Project:** Verity
 - **Competition:** CodeAxis Round 2 ("The Build")
