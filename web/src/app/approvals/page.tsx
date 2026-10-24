@@ -341,6 +341,7 @@ export default function ApprovalsPage() {
                 </button>
 
                 <button
+                  id="tour-approve-passport-btn"
                   type="button"
                   onClick={() => handleReviewAction("approve")}
                   disabled={acting || selectedSub.status === "approved"}

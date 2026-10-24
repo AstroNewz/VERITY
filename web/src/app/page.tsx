@@ -65,6 +65,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Creator Card */}
             <button
+              id="tour-creator-card"
               type="button"
               onClick={() => handleStartRole("creator", "/workspace")}
               className="brutal-card p-5 text-left bg-yellow hover:translate-x-1 hover:-translate-y-1 transition-all group flex flex-col justify-between"

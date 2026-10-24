@@ -180,7 +180,9 @@ export default function WorkspacePage() {
       <WorkflowStepper currentStep={currentStep} />
 
       {/* Preset Loader Bar */}
-      <DemoLoader onSelectPost={handleSelectPreset} selectedPostId={selectedPostId} />
+      <div id="tour-presets-bar">
+        <DemoLoader onSelectPost={handleSelectPreset} selectedPostId={selectedPostId} />
+      </div>
 
       {/* AI Telemetry & Graceful Degradation Notice (Audit Items 1 & D) */}
       {submission && (
@@ -292,6 +294,7 @@ export default function WorkspacePage() {
 
             {/* Big Action: Run Analysis */}
             <button
+              id="tour-run-check-btn"
               type="button"
               onClick={handleRunAnalysis}
               disabled={analyzing || !draftText.trim()}
@@ -364,6 +367,7 @@ export default function WorkspacePage() {
                 </div>
 
                 <button
+                  id="tour-submit-approval-btn"
                   type="button"
                   onClick={handleSubmitForReview}
                   disabled={submitting || submission.status === "pending_approval"}
@@ -382,7 +386,7 @@ export default function WorkspacePage() {
         </div>
 
         {/* Right Column: Findings Panel (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
+        <div id="tour-findings-panel" className="lg:col-span-5 space-y-4">
           <div className="brutal-card p-4 bg-white lg:sticky lg:top-24">
             {/* Header with stats */}
             <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b-2 border-ink">

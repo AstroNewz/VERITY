@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/lib/authContext";
+import { TourProvider } from "@/components/InteractiveTour";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -41,11 +42,12 @@ export default function RootLayout({
     >
       <body className="bg-cream text-ink min-h-screen flex flex-col font-body selection:bg-yellow selection:text-ink">
         <AuthProvider>
-          <Navbar />
-          <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-            {children}
-          </main>
-          <footer className="border-t-3 border-ink bg-white py-6 mt-16">
+          <TourProvider>
+            <Navbar />
+            <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+              {children}
+            </main>
+            <footer className="border-t-3 border-ink bg-white py-6 mt-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono">
               <div className="flex items-center gap-3">
                 <span className="font-heading font-black text-lg">VERITY</span>
@@ -60,8 +62,9 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-        </AuthProvider>
-      </body>
-    </html>
-  );
+        </TourProvider>
+      </AuthProvider>
+    </body>
+  </html>
+);
 }

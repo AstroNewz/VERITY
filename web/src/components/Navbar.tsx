@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/navigation";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/authContext";
+import { useTour } from "@/components/InteractiveTour";
 import { api } from "@/lib/api";
 import { Role } from "@/lib/types";
 import { 
@@ -19,11 +20,13 @@ import {
   Sparkles,
   Menu,
   X,
-  ArrowRight
+  ArrowRight,
+  Compass
 } from "lucide-react";
 
 export default function Navbar() {
   const { user, role, loginAsRole, resetDemoData, isLoading } = useAuth();
+  const { startTour } = useTour();
   const pathname = usePathname();
   const router = useRouter();
   const [resetting, setResetting] = useState(false);
@@ -223,6 +226,17 @@ export default function Navbar() {
               <span>{role}</span>
             </button>
 
+            {/* Tour Guide Button */}
+            <button
+              type="button"
+              onClick={startTour}
+              className="brutal-btn brutal-btn-yellow text-xs px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center gap-1.5 border-2 shadow-brutal-sm"
+              title="Launch step-by-step interactive walkthrough"
+            >
+              <Compass className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span className="hidden sm:inline">Tour Guide</span>
+            </button>
+
             {/* Reset Button */}
             <button
               type="button"
@@ -255,6 +269,19 @@ export default function Navbar() {
       {/* Mobile Drawer (When Hamburger is Clicked) */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t-3 border-ink bg-cream p-4 space-y-4 shadow-brutal-xl">
+          {/* Mobile Tour Guide Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              startTour();
+            }}
+            className="w-full brutal-btn brutal-btn-yellow text-xs py-2.5 px-3 border-2 flex items-center justify-center gap-2 shadow-brutal-btn"
+          >
+            <Compass className="w-4 h-4 stroke-[2.5]" />
+            <span>Start Interactive Tour Guide</span>
+          </button>
+
           {/* Mobile Role Switcher */}
           <div className="space-y-1.5">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-gray-600 block">
