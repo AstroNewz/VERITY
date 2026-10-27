@@ -37,7 +37,7 @@ export default function LandingPage() {
       <section className="text-left space-y-6 max-w-4xl">
         <div className="inline-block transform -rotate-1">
           <span className="brutal-badge bg-yellow text-ink border-3 text-xs sm:text-sm px-3 py-1 shadow-brutal-btn font-mono font-bold">
-            CODEAXIS ROUND 2 // TEAM BRAKET
+            CODEAXIS ROUND 3 // TEAM BRAKET (TOP 100 FINALIST)
           </span>
         </div>
 
@@ -52,6 +52,67 @@ export default function LandingPage() {
           Verity reviews content before publication. Every finding names the rule or approved source it breaks, explains why, and suggests an intent-preserving fix.{" "}
           <strong className="underline decoration-yellow decoration-4">Humans always make the final call.</strong>
         </p>
+
+        {/* Round 3 Improvements Delivered Strip */}
+        <div className="brutal-card p-5 bg-cream border-3 border-ink shadow-brutal-md space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-ink pb-2">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-ink text-yellow font-mono text-[10px] font-bold uppercase">
+                Round 3 Commitment
+              </span>
+              <h2 className="font-heading font-black text-sm uppercase text-ink">
+                All 3 Round 2 Commitments Delivered 100%
+              </h2>
+            </div>
+            <span className="font-mono text-[10px] text-gray-600 font-bold uppercase">
+              72-Hour Final Polish
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+            {/* R3-1 */}
+            <a
+              href="/workspace"
+              className="p-3 bg-white border-2 border-ink hover:bg-yellow transition-all space-y-1 block shadow-brutal-sm"
+            >
+              <div className="font-bold text-ink uppercase flex items-center justify-between">
+                <span>1. Vector Ledger</span>
+                <span className="text-[9px] bg-periwinkle px-1 border border-ink">ONNX</span>
+              </div>
+              <p className="text-[11px] text-gray-700 font-sans">
+                BAAI/bge-small-en embeddings for paraphrase claim matching without shared words.
+              </p>
+            </a>
+
+            {/* R3-2 */}
+            <a
+              href="/workspace?tab=asset"
+              className="p-3 bg-white border-2 border-ink hover:bg-pink transition-all space-y-1 block shadow-brutal-sm"
+            >
+              <div className="font-bold text-ink uppercase flex items-center justify-between">
+                <span>2. Vision Assets</span>
+                <span className="text-[9px] bg-mint px-1 border border-ink">WCAG 2.1</span>
+              </div>
+              <p className="text-[11px] text-gray-700 font-sans">
+                Computer vision banner analysis, brand token extraction, and perimeter safe-zones.
+              </p>
+            </a>
+
+            {/* R3-3 */}
+            <a
+              href="/extensions"
+              className="p-3 bg-white border-2 border-ink hover:bg-mint transition-all space-y-1 block shadow-brutal-sm"
+            >
+              <div className="font-bold text-ink uppercase flex items-center justify-between">
+                <span>3. In-Situ Plugins</span>
+                <span className="text-[9px] bg-yellow px-1 border border-ink">Chrome + Figma</span>
+              </div>
+              <p className="text-[11px] text-gray-700 font-sans">
+                Chromium browser extension & native Figma plugin with live web sandbox simulator.
+              </p>
+            </a>
+          </div>
+        </div>
 
         {/* Self-Guided Judge Walkthroughs Banner */}
         <div className="brutal-card p-5 sm:p-6 bg-ink text-white border-4 border-ink shadow-brutal-xl space-y-4 max-w-3xl">

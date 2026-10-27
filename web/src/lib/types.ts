@@ -66,7 +66,9 @@ export interface Finding {
   source_cited: string;
   suggestion: string;
   confidence: number;
-  origin: 'deterministic' | 'ai';
+  origin: 'deterministic' | 'ai' | 'semantic_vector';
+  match_type?: 'exact' | 'exact_substring' | 'token_overlap' | 'semantic_vector' | 'none';
+  match_score?: number;
   decision?: 'accept' | 'reject' | null;
   decided_by?: string;
   decided_at?: string;
@@ -174,4 +176,51 @@ export interface AIUsageLogItem {
   purpose: string;
   redactions_count: number;
   created_at: string;
+}
+
+export interface DominantColor {
+  hex: string;
+  rgb: [number, number, number];
+  percentage: number;
+  brand_token: string;
+  is_official: boolean;
+  distance?: number;
+}
+
+export interface AssetInspectionResult {
+  filename: string;
+  dimensions: {
+    width: number;
+    height: number;
+    aspect_ratio: string;
+    aspect_label: string;
+    resolution_grade: string;
+  };
+  dominant_palette: DominantColor[];
+  palette_alignment_score: number;
+  wcag_contrast: {
+    fg_hex: string;
+    bg_hex: string;
+    ratio: number;
+    ratio_str: string;
+    level: string;
+    pass_aa: boolean;
+    pass_aaa: boolean;
+  };
+  clear_space: {
+    status: string;
+    safe_zone_margin_pct: number;
+    border_encroachment_detected: boolean;
+  };
+  findings: Array<{
+    rule_id: string;
+    type: string;
+    severity: 'critical' | 'warning' | 'info';
+    title: string;
+    message: string;
+    source_cited: string;
+    confidence: number;
+  }>;
+  art_director_critique: string;
+  annotated_preview_base64: string;
 }

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verity Brand Guard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+    }
+    body {
+      width: 380px;
+      background: #FFFBEF;
+      color: #111111;
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #111111;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-badge {
+      background: #FFE500;
+      border: 2px solid #111111;
+      box-shadow: 2px 2px 0px #111111;
+      font-weight: 900;
+      font-size: 15px;
+      padding: 4px 8px;
+    }
+    .title {
+      font-weight: 900;
+      font-size: 15px;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+    }
+    .tagline {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #555555;
+    }
+    .status-badge {
+      background: #00FF66;
+      border: 1.5px solid #111111;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      text-transform: uppercase;
+    }
+    .card {
+      background: #FFFFFF;
+      border: 2px solid #111111;
+      box-shadow: 3px 3px 0px #111111;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #444;
+      display: block;
+      margin-bottom: 4px;
+    }
+    textarea {
+      width: 100%;
+      height: 75px;
+      border: 2px solid #111111;
+      background: #FFFBEF;
+      padding: 8px;
+      font-size: 12px;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+    }
+    textarea:focus {
+      background: #FFFFFF;
+    }
+    .btn-group {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    button {
+      flex: 1;
+      border: 2px solid #111111;
+      font-weight: 800;
+      font-size: 11px;
+      text-transform: uppercase;
+      padding: 8px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #111111;
+      transition: transform 0.1s;
+    }
+    button:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+    .btn-primary {
+      background: #FFE500;
+      color: #111111;
+    }
+    .btn-secondary {
+      background: #FFFFFF;
+      color: #111111;
+      flex: 0 0 auto;
+      padding: 8px 10px;
+    }
+    .findings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .finding-item {
+      border: 2px solid #111111;
+      padding: 8px;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+    .finding-critical {
+      background: #FFE8E8;
+      border-color: #FF3366;
+    }
+    .finding-warning {
+      background: #FFF9D2;
+    }
+    .finding-safe {
+      background: #E8FFF0;
+    }
+    .pill {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 900;
+      padding: 1px 4px;
+      border: 1px solid #111111;
+      text-transform: uppercase;
+      margin-right: 4px;
+      background: #FFFFFF;
+    }
+    .fix-btn {
+      margin-top: 4px;
+      padding: 3px 6px;
+      background: #00FF66;
+      border: 1.5px solid #111111;
+      font-size: 9px;
+      font-weight: 800;
+      box-shadow: 1px 1px 0px #111111;
+      cursor: pointer;
+    }
+    .api-config {
+      font-size: 9px;
+      color: #666;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      border-top: 1px dashed #CCC;
+      padding-top: 6px;
+    }
+    .api-config select {
+      font-size: 9px;
+      border: 1px solid #111111;
+      background: white;
+      padding: 2px 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <div class="logo-badge">V</div>
+      <div>
+        <div class="title">Verity Guard</div>
+        <div class="tagline">Cites Before It Flags</div>
+      </div>
+    </div>
+    <div class="status-badge" id="api-status">API Ready</div>
+  </div>
+
+  <div class="card">
+    <label for="draft-input">Draft Copy / Social Post:</label>
+    <textarea id="draft-input" placeholder="Highlight text on any webpage or paste marketing copy here..."></textarea>
+    
+    <div class="btn-group">
+      <button class="btn-primary" id="check-btn">🔍 Run Verity Check</button>
+      <button class="btn-secondary" id="sample-btn" title="Load sample post with claim & tone error">Demo</button>
+      <button class="btn-secondary" id="page-btn" title="Inspect selected text from active tab">Grab Selected</button>
+    </div>
+  </div>
+
+  <div id="results-container" style="display: none;">
+    <div class="findings-header">
+      <span>Governance Findings (<span id="findings-count">0</span>)</span>
+      <span id="compliance-badge" class="pill" style="background:#FFE500;">CHECKED</span>
+    </div>
+    <div id="findings-list"></div>
+  </div>
+
+  <div class="api-config">
+    <span>Target Gateway:</span>
+    <select id="api-target">
+      <option value="https://verity-api.onrender.com">Cloud (Render API)</option>
+      <option value="http://localhost:8000">Local (localhost:8000)</option>
+    </select>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

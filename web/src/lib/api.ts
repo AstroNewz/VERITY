@@ -24,10 +24,13 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   const token = getToken();
   const sessionId = getSessionId();
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
     "X-Session-ID": sessionId,
     ...(options.headers as Record<string, string>),
   };
+
+  if (!(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -101,6 +104,28 @@ export const api = {
         body: formData,
       });
       if (!res.ok) throw new Error("File upload and parsing failed.");
+      return await res.json();
+    },
+    inspectAsset: async (formData: FormData): Promise<any> => {
+      const token = getToken();
+      const sessionId = getSessionId();
+      const headers: Record<string, string> = {
+        "X-Session-ID": sessionId,
+      };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(`${API_URL}/submissions/inspect-asset`, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+      if (!res.ok) {
+        let errDetail = "Graphic asset inspection failed.";
+        try {
+          const err = await res.json();
+          if (err.detail) errDetail = err.detail;
+        } catch (_) {}
+        throw new Error(errDetail);
+      }
       return await res.json();
     },
     get: (id: string) => request<any>(`/submissions/${id}`),

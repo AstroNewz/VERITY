@@ -22,6 +22,7 @@ from app.engine.privacy_gateway import redact_sensitive_content
 from app.engine.groq_reviewer import review_with_groq
 from app.engine.passport import create_publish_passport
 from app.engine.document_parser import parse_uploaded_file
+from app.engine.asset_vision import analyze_graphic_asset, create_sample_brand_poster
 
 router = APIRouter(prefix="/submissions", tags=["Submissions & Workflow"])
 
@@ -280,6 +281,8 @@ def analyze_submission(
             suggestion=item["suggestion"],
             confidence=item.get("confidence", 1.0),
             origin=item.get("origin", "deterministic"),
+            match_type=item.get("match_type"),
+            match_score=item.get("match_score"),
             decision=None
         )
         db.add(finding)
@@ -444,3 +447,38 @@ def add_comment(
         "text": cmt.text,
         "created_at": cmt.created_at
     }
+
+@router.post("/inspect-asset")
+async def inspect_graphic_asset(
+    file: Optional[UploadFile] = File(None),
+    use_sample: Optional[str] = Form(None),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Round 3: Multimodal Computer Vision Analysis of creative posters / banner graphics.
+    Evaluates color palette adherence, WCAG 2.1 contrast, safe-zone margins, and brand asset alignment.
+    """
+    if use_sample == "true" or file is None:
+        content = create_sample_brand_poster()
+        filename = "novafest_social_launch_banner.png"
+    else:
+        ext = file.filename.split(".")[-1].lower() if "." in file.filename else ""
+        if ext not in {"png", "jpg", "jpeg", "webp", "svg"}:
+            raise HTTPException(
+                status_code=400,
+                detail="Supported image formats: .png, .jpg, .jpeg, .webp, .svg"
+            )
+        content = await file.read()
+        if len(content) > MAX_FILE_SIZE_BYTES:
+            raise HTTPException(
+                status_code=413,
+                detail=f"Image file exceeds maximum {MAX_FILE_SIZE_BYTES // (1024*1024)}MB limit."
+            )
+        filename = file.filename
+
+    try:
+        result = analyze_graphic_asset(content, filename=filename)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=f"Visual asset analysis failed: {e}")
+

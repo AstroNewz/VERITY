@@ -45,6 +45,12 @@ DEMO_POSTS = [
         "title": "Stage Banner Spec with Accessibility Defect",
         "description": "Fails WCAG AA contrast ratio and lacks image alt text.",
         "text": "Stage Banner Spec: The text color is #FFFF00 on background #FFFFFF. See visual layout: ![](https://assets.novafest.edu/banner.png)"
+    },
+    {
+        "id": "demo_post_semantic_embedding",
+        "title": "Round 3: Dense Vector Paraphrase Match",
+        "description": "Demonstrates BAAI/bge-small-en-v1.5 dense vector embeddings matching paraphrased claims with 0 shared words.",
+        "text": "Welcome scholars! Nova Fest offers complimentary admission for college scholars on opening night. We were voted the premier university celebration across the nation, with over ten thousand visitors attending!"
     }
 ]
 

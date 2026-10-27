@@ -123,6 +123,8 @@ class FindingRead(BaseModel):
     suggestion: str
     confidence: float
     origin: str
+    match_type: Optional[str] = None
+    match_score: Optional[float] = None
     decision: Optional[str] = None
     decided_by: Optional[str] = None
     decided_at: Optional[datetime] = None

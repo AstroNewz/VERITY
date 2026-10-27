@@ -124,7 +124,9 @@ class Finding(Base):
     source_cited = Column(Text, nullable=False)     # e.g. "Rule T-1 (Nova Fest Brand Book)" or "Ledger F-1 (Registrar)"
     suggestion = Column(Text, nullable=False)
     confidence = Column(Float, default=1.0)
-    origin = Column(String(32), default="deterministic") # deterministic | ai
+    origin = Column(String(32), default="deterministic") # deterministic | ai | semantic_vector
+    match_type = Column(String(32), nullable=True)        # exact | token_overlap | semantic_vector | none
+    match_score = Column(Float, nullable=True)            # semantic vector similarity / confidence score
     decision = Column(String(32), nullable=True)    # accept | reject | None
     decided_by = Column(String(64), nullable=True)
     decided_at = Column(DateTime(timezone=True), nullable=True)

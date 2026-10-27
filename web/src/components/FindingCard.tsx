@@ -12,7 +12,8 @@ import {
   Scale, 
   Sparkles, 
   Cpu, 
-  ArrowRight
+  ArrowRight,
+  Database
 } from "lucide-react";
 
 interface FindingCardProps {
@@ -79,6 +80,11 @@ export default function FindingCard({
                 <Sparkles className="w-2.5 h-2.5 text-pink-500" />
                 GROQ AI
               </>
+            ) : finding.origin === "semantic_vector" || finding.match_type === "semantic_vector" ? (
+              <>
+                <Database className="w-2.5 h-2.5 text-purple-600" />
+                DENSE VECTOR (SEMANTIC)
+              </>
             ) : (
               <>
                 <Cpu className="w-2.5 h-2.5 text-blue-500" />
@@ -111,6 +117,23 @@ export default function FindingCard({
           </span>
         </div>
       </div>
+
+      {/* Dense Vector Semantic Match Highlight Box (Round 3 Improvement) */}
+      {(finding.origin === "semantic_vector" || finding.match_type === "semantic_vector" || finding.source_cited.includes("Dense Vector Sim") || finding.source_cited.includes("Vector Match")) && (
+        <div className="mb-3 p-2.5 bg-purple-50 border-2 border-purple-900 text-purple-950 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="bg-purple-900 text-white font-bold text-[9px] px-1.5 py-0.5 uppercase tracking-wider">
+              ROUND 3: DENSE EMBEDDING
+            </span>
+            <span className="text-[11px] font-semibold text-purple-900">
+              Matched via BAAI/bge-small-en-v1.5
+            </span>
+          </div>
+          <span className="font-bold text-xs bg-white px-2 py-0.5 border border-purple-900 text-purple-900 self-start sm:self-auto">
+            {Math.round((finding.match_score || finding.confidence) * 100)}% COSINE SIMILARITY
+          </span>
+        </div>
+      )}
 
       {/* Before / After Diff Visualizer */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3 text-xs font-mono">

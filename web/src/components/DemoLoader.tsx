@@ -66,7 +66,7 @@ export default function DemoLoader({ onSelectPost, selectedPostId }: DemoLoaderP
               onClick={() => setIsOpen(!isOpen)}
               className="brutal-btn brutal-btn-white text-xs py-2 sm:py-1.5 px-3 border-2 flex items-center justify-between gap-2 w-full sm:w-auto"
             >
-              <span className="truncate">{activePost ? activePost.title.slice(0, 16) + "..." : "All 6 Presets"}</span>
+              <span className="truncate">{activePost ? activePost.title.slice(0, 16) + "..." : `All ${posts.length || 7} Presets`}</span>
               <ChevronDown className="w-3.5 h-3.5 shrink-0" />
             </button>
 
@@ -78,6 +78,7 @@ export default function DemoLoader({ onSelectPost, selectedPostId }: DemoLoaderP
                 {posts.map((post, idx) => {
                   const isClean = post.id === "demo_post_clean";
                   const isComprehensive = post.id === "demo_post_comprehensive";
+                  const isSemantic = post.id === "demo_post_semantic_embedding";
                   return (
                     <button
                       key={post.id}
@@ -100,6 +101,8 @@ export default function DemoLoader({ onSelectPost, selectedPostId }: DemoLoaderP
                           <span className="brutal-chip bg-mint text-[9px] py-0 px-1 border">Clean</span>
                         ) : isComprehensive ? (
                           <span className="brutal-chip bg-pink text-[9px] py-0 px-1 border">Planted</span>
+                        ) : isSemantic ? (
+                          <span className="brutal-chip bg-purple-700 text-white text-[9px] py-0 px-1 border">R3 Vector</span>
                         ) : null}
                       </div>
                       <p className="text-[11px] font-sans text-gray-600 mt-1 line-clamp-2">

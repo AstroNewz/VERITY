@@ -24,13 +24,26 @@ import {
   Eye,
   ShieldCheck,
   PauseCircle,
-  Compass
+  Compass,
+  Palette
 } from "lucide-react";
+import AssetInspector from "@/components/AssetInspector";
 
 export default function WorkspacePage() {
   const { user, role } = useAuth();
   const { startTour } = useTour();
   const router = useRouter();
+
+  const [workspaceMode, setWorkspaceMode] = useState<"text" | "asset">("text");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("tab") === "asset") {
+        setWorkspaceMode("asset");
+      }
+    }
+  }, []);
 
   const [title, setTitle] = useState("NovaFest 2026 Campus Launch Announcement");
   const [draftText, setDraftText] = useState(
@@ -182,8 +195,44 @@ export default function WorkspacePage() {
       {/* Workflow Stepper */}
       <WorkflowStepper currentStep={currentStep} />
 
-      {/* Contextual Creator Tour Assistant Banner */}
-      <div className="p-3 bg-yellow border-3 border-ink shadow-brutal-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+      {/* Mode Switcher: Text Governance vs Visual Asset Inspector */}
+      <div className="flex flex-wrap items-center gap-2 border-b-3 border-ink pb-3">
+        <button
+          type="button"
+          onClick={() => setWorkspaceMode("text")}
+          className={`brutal-btn text-xs py-2.5 px-4 flex items-center gap-2 border-2 transition-all ${
+            workspaceMode === "text"
+              ? "brutal-btn-yellow font-black shadow-brutal-btn"
+              : "brutal-btn-white text-gray-700 hover:text-ink font-bold"
+          }`}
+        >
+          <FileText className="w-4 h-4 stroke-[2.5]" />
+          <span>1. Text & Copy Governance Engine</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setWorkspaceMode("asset")}
+          className={`brutal-btn text-xs py-2.5 px-4 flex items-center gap-2 border-2 transition-all ${
+            workspaceMode === "asset"
+              ? "brutal-btn-pink font-black shadow-brutal-btn"
+              : "brutal-btn-white text-gray-700 hover:text-ink font-bold"
+          }`}
+        >
+          <Palette className="w-4 h-4 stroke-[2.5]" />
+          <span>2. Visual & Banner Asset Inspector (Round 3)</span>
+          <span className="bg-ink text-yellow text-[9px] font-mono px-1.5 py-0.5 border border-ink font-bold">
+            NEW
+          </span>
+        </button>
+      </div>
+
+      {workspaceMode === "asset" ? (
+        <AssetInspector />
+      ) : (
+        <>
+          {/* Contextual Creator Tour Assistant Banner */}
+          <div className="p-3 bg-yellow border-3 border-ink shadow-brutal-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
         <div className="flex items-center gap-2">
           <Compass className="w-4 h-4 text-ink stroke-[2.5]" />
           <span className="font-bold text-ink">
@@ -516,6 +565,8 @@ export default function WorkspacePage() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

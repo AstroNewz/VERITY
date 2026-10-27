@@ -13,6 +13,17 @@ from app.routers import (
 async def lifespan(app: FastAPI):
     # Initialize DB tables
     Base.metadata.create_all(bind=engine)
+    try:
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            for col, col_type in [("match_type", "VARCHAR(32)"), ("match_score", "FLOAT")]:
+                try:
+                    conn.execute(text(f"ALTER TABLE findings ADD COLUMN {col} {col_type}"))
+                    conn.commit()
+                except Exception:
+                    pass
+    except Exception:
+        pass
     # Auto-seed pristine Nova Fest data
     db = SessionLocal()
     try:

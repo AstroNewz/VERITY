@@ -21,7 +21,8 @@ import {
   Menu,
   X,
   ArrowRight,
-  Compass
+  Compass,
+  Puzzle
 } from "lucide-react";
 
 export default function Navbar() {
@@ -100,6 +101,7 @@ export default function Navbar() {
     { label: "Claims Ledger", href: "/ledger", icon: Scale, roleOnly: null },
     { label: "Health Radar", href: "/radar", icon: Activity, roleOnly: null },
     { label: "Insights", href: "/insights", icon: BarChart3, roleOnly: null },
+    { label: "Plugins (R3)", href: "/extensions", icon: Puzzle, roleOnly: null },
     { label: "AI Audit", href: "/ai-logs", icon: EyeOff, roleOnly: null },
   ];
 
