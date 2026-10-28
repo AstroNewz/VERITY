@@ -113,7 +113,7 @@ def generate_pdf(output_path: str):
     header_data = [
         [
             Paragraph("<b>VERITY // SUBMISSION DELIVERABLE REPORT</b>", title_style),
-            Paragraph("<b>CODEAXIS ROUND 2</b><br/>TEAM BRAKET", ParagraphStyle('RightH', parent=subtitle_style, alignment=2))
+            Paragraph("<b>CODEAXIS ROUND 3 (TOP 50 FINALIST)</b><br/>TEAM BRAKET", ParagraphStyle('RightH', parent=subtitle_style, alignment=2))
         ]
     ]
     t_header = Table(header_data, colWidths=[4.2 * inch, 3.1 * inch])
@@ -360,7 +360,7 @@ def generate_pdf(output_path: str):
     # --- 4. EXPLANATION OF CHANGES MADE TO ORIGINAL PLAN ---
     story.append(Paragraph("4. EXPLANATION OF CHANGES MADE TO ORIGINAL PLAN", h1_style))
     story.append(Paragraph(
-        "During Round 2 implementation and comprehensive audit testing, several strategic architectural adjustments were made to ensure maximum performance, security, and judge experience:",
+        "During Round 3 implementation and comprehensive audit testing, several strategic architectural adjustments were made to ensure maximum performance, security, and judge experience:",
         body_style
     ))
 

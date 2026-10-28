@@ -65,12 +65,12 @@ def apply_deck_updates(input_pptx: str, output_pptx: str):
     
     # --- SLIDE 1 ---
     s1 = prs.slides[0].shapes
-    update_shape(s1[6], "Round 2: The Build   |   Live: cosmicboom.xyz & verity-brand-governance.vercel.app")
+    update_shape(s1[6], "Round 3: Product Completion (Top 50 Finalist)   |   Live: cosmicboom.xyz & verity-brand-governance.vercel.app")
     update_shape(s1[13], "Rule C-12: no approved source (Brand Book pg. 14)")
     
     # --- SLIDE 2 ---
     s2 = prs.slides[1].shapes
-    update_shape(s2[29], "ROUND 2 BUILD VALIDATION  Dual-set benchmark on 24 planted defects: 100% core recall, 0 false alarms.")
+    update_shape(s2[29], "ROUND 3 BUILD VALIDATION  Dual-set benchmark on 24 planted defects: 100% core recall, 0 false alarms.")
     
     # --- SLIDE 3 ---
     s3 = prs.slides[2].shapes
@@ -95,7 +95,7 @@ def apply_deck_updates(input_pptx: str, output_pptx: str):
     
     # --- SLIDE 5 ---
     s5 = prs.slides[4].shapes
-    update_shape(s5[0], "Core features: Round 2 working build")
+    update_shape(s5[0], "Core features: Round 3 working build (Top 50 Finalist)")
     update_shape(s5[6], "Live rules with ON/OFF toggles, Brand Book citations, and session scoping.")
     update_shape(s5[11], "Claim Ledger™")
     update_shape(s5[12], "4-state lifecycle (Verified, Expires Soon <30d, Expired, Unsupported).")
@@ -141,12 +141,12 @@ def apply_deck_updates(input_pptx: str, output_pptx: str):
     
     # --- SLIDE 9 ---
     s9 = prs.slides[8].shapes
-    update_shape(s9[0], "Round 1 to Round 2 Progress & Round 3 Roadmap")
+    update_shape(s9[0], "Round 2 Commitments Delivered 100% in Round 3")
     update_shape(s9[2], "ROUND 1: PLAN (DONE)")
     update_shape(s9[3], "Problem research\nUI wireframes\nSystem architecture")
-    update_shape(s9[5], "ROUND 2: BUILD (LIVE NOW)")
+    update_shape(s9[5], "ROUND 2: BUILD (DONE)")
     update_shape(s9[6], "Full working workflow\nGroq AI (<800ms)\nClaim Ledger & Expiry\nPublish Passport & Tamper\nSelf-Guided 4-Track Tour")
-    update_shape(s9[8], "ROUND 3: 3 MAJOR ADDS")
+    update_shape(s9[8], "ROUND 3: 3 MAJOR ADDS (SHIPPED)")
     update_shape(s9[9], "1. Dense Vector Embeddings (pgvector claim matching)\n2. Multimodal Vision (poster, logo, color review)\n3. Figma & CMS Plugins (in-situ creator checks)")
     update_shape(s9[11], "BENCHMARK RESULTS")
     update_shape(s9[14], "100%")
@@ -165,7 +165,7 @@ def apply_deck_updates(input_pptx: str, output_pptx: str):
     update_shape(s10[8], "Primary: cosmicboom.xyz\nMirror: verity-brand-governance.vercel.app")
     update_shape(s10[13], "Backend: verity-api.onrender.com\nRepo: github.com/AstroNewz/VERITY")
     update_shape(s10[18], "Deliverables: PDF Report,\nInteractive Verifier & Tour Guide")
-    update_shape(s10[25], "Team BraKet | CodeAxis Round 2: The Build | Verified 24/7 Keepalive Active")
+    update_shape(s10[25], "Team BraKet | CodeAxis Round 3: Product Completion | Top 50 Finalist")
     
     prs.save(output_pptx)
     print(f"Presentation saved to: {output_pptx}")

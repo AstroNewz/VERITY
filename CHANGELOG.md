@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2026-10-28
+### Round 3 Product Completion & Top 50 Finalist Hardening — CodeAxis Round 3
+- **Three Exact Round 2 Commitments Delivered 100%**:
+  - **Vector Semantic Search**: pgvector-compatible Dense Vector Embeddings with hybrid lexical + semantic search for claim ledger matching.
+  - **Multimodal Computer Vision Engine**: Visual asset compliance checking for logos, color palettes, and typography using Groq Llama 3.2 Vision.
+  - **Live In-Situ Extensions Ecosystem**: Full Chrome/Chromium Browser Extension and Figma Community Plugin with live API integration.
+- **Top 50 Finalist Hardening**:
+  - Zero Unicode Emojis across all web routes, extensions, and Figma plugin — 100% clean vector Lucide React & inline SVGs.
+  - Automated 24/7 Keep-Alive workflow (.github/workflows/keep-alive.yml) with dual-root health probe to eliminate Render cold-starts.
+  - High-contrast Coral Red cold-start notification banner with user dismiss control.
+  - Dynamic Neo-Brutalist typography audit and single-line navbar stability on desktop viewports.
+
 ## [1.1.0] - 2026-10-24
 ### Audit Remediation, Session Sandboxing & System Hardening
 - **Multi-Tenant Per-Session Sandboxing**:
