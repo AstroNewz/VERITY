@@ -38,7 +38,7 @@
     removeFloatingTrigger();
     triggerBtn = document.createElement("div");
     triggerBtn.id = "verity-floating-trigger";
-    triggerBtn.innerHTML = `<span>🛡️</span><span>Check with Verity</span>`;
+    triggerBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><span>Check with Verity</span>`;
     triggerBtn.style.left = `${Math.max(10, x - 120)}px`;
     triggerBtn.style.top = `${Math.max(10, y)}px`;
 
@@ -99,11 +99,13 @@
 
     let html = `
       <div class="verity-modal-header">
-        <div class="verity-modal-title">
-          <span>🛡️</span>
+        <div class="verity-modal-title" style="display:flex; align-items:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
           <span>Verity Brand Guard</span>
         </div>
-        <button class="verity-modal-close" id="verity-close-btn">✕</button>
+        <button class="verity-modal-close" id="verity-close-btn" aria-label="Close" style="display:flex; align-items:center; justify-content:center; padding:2px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
 
       <div style="font-size:10px; font-family:monospace; margin-bottom:8px; color:#555;">
@@ -113,9 +115,12 @@
 
     if (isClean) {
       html += `
-        <div style="padding:12px; background:#00FF66; border:2px solid #111; font-weight:800; font-size:12px;">
-          ✅ 100% BRAND COMPLIANT
-          <div style="font-size:10px; font-weight:normal; margin-top:4px;">
+        <div style="padding:12px; background:#00FF66; border:2px solid #111; font-weight:800; font-size:12px; display:flex; flex-direction:column; gap:4px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>100% BRAND COMPLIANT</span>
+          </div>
+          <div style="font-size:10px; font-weight:normal;">
             Zero rule violations or unverified claims detected in selected copy.
           </div>
         </div>
@@ -163,7 +168,7 @@
         const oldP = decodeURIComponent(e.target.dataset.old);
         const newP = decodeURIComponent(e.target.dataset.new);
         applyFixToPage(originalText, oldP, newP);
-        btn.textContent = "✓ Fix Applied!";
+        btn.textContent = "Fix Applied!";
         btn.style.background = "#FFE500";
       });
     });
@@ -177,14 +182,14 @@
       const val = activeTargetElement.value;
       if (val.includes(oldPhrase)) {
         activeTargetElement.value = val.replace(oldPhrase, newPhrase);
-        showToast("✓ Text updated in field!");
+        showToast("Text updated in field!");
         return;
       }
     }
 
     // Otherwise copy to clipboard
     navigator.clipboard.writeText(fixedText);
-    showToast("✓ Fixed text copied to clipboard!");
+    showToast("Fixed text copied to clipboard!");
   }
 
   function removeModal() {

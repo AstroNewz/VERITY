@@ -16,9 +16,11 @@ import {
   EyeOff, 
   Sparkles, 
   CheckCircle2, 
-  Zap,
   Compass,
-  Play
+  Play,
+  PenTool,
+  Crown,
+  Zap
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -149,21 +151,24 @@ export default function LandingPage() {
               onClick={() => startTour("creator")}
               className="brutal-btn brutal-btn-white text-xs py-2.5 px-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 shadow-brutal-sm text-ink font-bold"
             >
-              <span>✍️ Creator Tour</span>
+              <PenTool className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Creator Tour</span>
             </button>
             <button
               type="button"
               onClick={() => startTour("reviewer")}
               className="brutal-btn brutal-btn-white text-xs py-2.5 px-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 shadow-brutal-sm text-ink font-bold"
             >
-              <span>⚖️ Reviewer Tour</span>
+              <Scale className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Reviewer Tour</span>
             </button>
             <button
               type="button"
               onClick={() => startTour("owner")}
               className="brutal-btn brutal-btn-white text-xs py-2.5 px-3 flex flex-col sm:flex-row items-center justify-center gap-1.5 shadow-brutal-sm text-ink font-bold"
             >
-              <span>👑 Owner Tour</span>
+              <Crown className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Owner Tour</span>
             </button>
           </div>
         </div>
@@ -210,9 +215,10 @@ export default function LandingPage() {
                     e.stopPropagation();
                     startTour("creator");
                   }}
-                  className="w-full text-center px-2 py-1 bg-white text-ink border-2 border-ink text-[10px] font-mono font-bold uppercase hover:bg-ink hover:text-white transition-colors"
+                  className="w-full text-center px-2 py-1 bg-white text-ink border-2 border-ink text-[10px] font-mono font-bold uppercase hover:bg-ink hover:text-white transition-colors flex items-center justify-center gap-1"
                 >
-                  ▶ Take Creator Tour
+                  <Play className="w-2.5 h-2.5 fill-current" />
+                  <span>Take Creator Tour</span>
                 </button>
               </div>
             </div>
@@ -244,9 +250,10 @@ export default function LandingPage() {
                     e.stopPropagation();
                     startTour("reviewer");
                   }}
-                  className="w-full text-center px-2 py-1 bg-white text-ink border-2 border-ink text-[10px] font-mono font-bold uppercase hover:bg-ink hover:text-white transition-colors"
+                  className="w-full text-center px-2 py-1 bg-white text-ink border-2 border-ink text-[10px] font-mono font-bold uppercase hover:bg-ink hover:text-white transition-colors flex items-center justify-center gap-1"
                 >
-                  ▶ Take Reviewer Tour
+                  <Play className="w-2.5 h-2.5 fill-current" />
+                  <span>Take Reviewer Tour</span>
                 </button>
               </div>
             </div>
@@ -278,9 +285,10 @@ export default function LandingPage() {
                     e.stopPropagation();
                     startTour("owner");
                   }}
-                  className="w-full text-center px-2 py-1 bg-white text-ink border-2 border-ink text-[10px] font-mono font-bold uppercase hover:bg-ink hover:text-white transition-colors"
+                  className="w-full text-center px-2 py-1 bg-white text-ink border-2 border-ink text-[10px] font-mono font-bold uppercase hover:bg-ink hover:text-white transition-colors flex items-center justify-center gap-1"
                 >
-                  ▶ Take Owner Tour
+                  <Play className="w-2.5 h-2.5 fill-current" />
+                  <span>Take Owner Tour</span>
                 </button>
               </div>
             </div>

@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    checkBtn.textContent = "⏳ CITING RULES...";
+    checkBtn.textContent = "CITING RULES...";
     checkBtn.disabled = true;
 
     try {
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) {
       alert("Error inspecting text: " + err.message);
     } finally {
-      checkBtn.textContent = "🔍 Run Verity Check";
+      checkBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><span>Run Verity Check</span>';
       checkBtn.disabled = false;
     }
   }
@@ -137,7 +137,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (findings.length === 0) {
       findingsList.innerHTML = `
         <div class="finding-item finding-safe">
-          <strong>✅ 100% Brand Compliant</strong>
+          <div style="font-weight:800; display:flex; align-items:center; gap:4px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>100% Brand Compliant</span>
+          </div>
           <div style="font-size:10px; color:#333; margin-top:2px;">
             Zero rule violations or unverified claims detected.
           </div>
@@ -183,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (oldPhrase && newPhrase) {
           draftInput.value = draftInput.value.replace(new RegExp(escapeRegExp(oldPhrase), "i"), newPhrase);
           navigator.clipboard.writeText(draftInput.value);
-          btn.textContent = "✓ Applied & Copied!";
+          btn.textContent = "Applied & Copied!";
           btn.style.background = "#FFE500";
         }
       });

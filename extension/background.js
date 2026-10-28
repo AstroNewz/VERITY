@@ -2,7 +2,7 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "verity-verify-selection",
-    title: "🛡️ Verify with Verity Brand Guard",
+    title: "Verify with Verity Brand Guard",
     contexts: ["selection"]
   });
 });

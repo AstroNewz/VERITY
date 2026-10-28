@@ -16,7 +16,8 @@ import {
   Sparkles,
   ToggleLeft,
   ToggleRight,
-  Compass
+  Compass,
+  Play
 } from "lucide-react";
 
 export default function ConstitutionPage() {
@@ -102,9 +103,10 @@ export default function ConstitutionPage() {
         <button
           type="button"
           onClick={() => startTour("owner")}
-          className="brutal-btn brutal-btn-white text-[11px] py-1 px-3 border-2 font-bold uppercase hover:bg-ink hover:text-white transition-colors shrink-0 self-start sm:self-auto"
+          className="brutal-btn brutal-btn-white text-[11px] py-1 px-3 border-2 font-bold uppercase hover:bg-ink hover:text-white transition-colors shrink-0 self-start sm:self-auto flex items-center gap-1.5"
         >
-          ▶ Start Owner Tour (8 Steps)
+          <Play className="w-2.5 h-2.5 fill-current" />
+          <span>Start Owner Tour (8 Steps)</span>
         </button>
       </div>
 

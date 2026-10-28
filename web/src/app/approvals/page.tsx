@@ -19,7 +19,8 @@ import {
   ExternalLink,
   ChevronRight,
   AlertCircle,
-  Compass
+  Compass,
+  Play
 } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -120,9 +121,10 @@ export default function ApprovalsPage() {
         <button
           type="button"
           onClick={() => startTour("reviewer")}
-          className="brutal-btn brutal-btn-white text-[11px] py-1 px-3 border-2 font-bold uppercase hover:bg-ink hover:text-white transition-colors shrink-0 self-start sm:self-auto"
+          className="brutal-btn brutal-btn-white text-[11px] py-1 px-3 border-2 font-bold uppercase hover:bg-ink hover:text-white transition-colors shrink-0 self-start sm:self-auto flex items-center gap-1.5"
         >
-          ▶ Start Reviewer Tour (6 Steps)
+          <Play className="w-2.5 h-2.5 fill-current" />
+          <span>Start Reviewer Tour (6 Steps)</span>
         </button>
       </div>
 

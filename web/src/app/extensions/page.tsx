@@ -21,7 +21,10 @@ import {
   Smile,
   BarChart2,
   Lock,
-  RefreshCw
+  RefreshCw,
+  Target,
+  AlertOctagon,
+  Search
 } from "lucide-react";
 
 interface InSituFinding {
@@ -58,7 +61,7 @@ export default function ExtensionsPage() {
 
   const applyBrowserFix = (oldPhrase: string, newPhrase: string) => {
     setSocialText((prev) => prev.replace(oldPhrase, newPhrase));
-    triggerToast(`✓ Replaced "${oldPhrase}" with "${newPhrase}"!`);
+    triggerToast(`Replaced "${oldPhrase}" with "${newPhrase}"`);
   };
 
   const loadBrowserPreset = (scenario: "all" | "tone" | "claim" | "confidential" | "clean") => {
@@ -81,7 +84,7 @@ export default function ExtensionsPage() {
     setTimeout(() => {
       setFigmaScanning(false);
       setFigmaScanned(true);
-      triggerToast("✓ Verity: Scanned 3 canvas text layers against Brand Constitution!");
+      triggerToast("Verity: Scanned 3 canvas text layers against Brand Constitution");
     }, 600);
   };
 
@@ -89,7 +92,7 @@ export default function ExtensionsPage() {
     setFigmaLayers((prev) =>
       prev.map((l) => (l.id === layerId ? { ...l, text: l.text.replace(oldPhrase, newPhrase) } : l))
     );
-    triggerToast(`✓ Updated Figma canvas layer with compliant copy!`);
+    triggerToast(`Updated Figma canvas layer with compliant copy`);
   };
 
   // Dynamic Browser Findings
@@ -365,8 +368,9 @@ export default function ExtensionsPage() {
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="px-2 py-0.5 bg-yellow text-ink text-[10px] font-bold border border-ink uppercase">
-                    🛡️ Verity Active
+                  <span className="px-2 py-0.5 bg-yellow text-ink text-[10px] font-bold border border-ink uppercase flex items-center gap-1.5">
+                    <ShieldCheck className="w-3 h-3 stroke-[2.5]" />
+                    <span>Verity Active</span>
                   </span>
                 </div>
               </div>
@@ -377,44 +381,50 @@ export default function ExtensionsPage() {
                 <div className="lg:col-span-7 space-y-4">
                   {/* Scenario Quick-Loader Chips */}
                   <div className="space-y-1.5 bg-cream p-3 border-2 border-ink shadow-brutal-sm">
-                    <span className="font-mono text-[10px] font-bold uppercase text-gray-600 block">
-                      ⚡ Quick-Load Test Scenarios (1-Click):
+                    <span className="font-mono text-[10px] font-bold uppercase text-gray-600 block flex items-center gap-1">
+                      <Zap className="w-3 h-3 text-ink" />
+                      <span>Quick-Load Test Scenarios (1-Click):</span>
                     </span>
                     <div className="flex flex-wrap gap-1.5 font-mono text-[10px] font-bold">
                       <button
                         type="button"
                         onClick={() => loadBrowserPreset("all")}
-                        className="px-2 py-1 bg-yellow hover:bg-ink hover:text-yellow border border-ink uppercase shadow-xs transition-colors"
+                        className="px-2 py-1 bg-yellow hover:bg-ink hover:text-yellow border border-ink uppercase shadow-xs transition-colors flex items-center gap-1"
                       >
-                        🎯 3 Issues Combo
+                        <Target className="w-3 h-3" />
+                        <span>3 Issues Combo</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => loadBrowserPreset("tone")}
-                        className="px-2 py-1 bg-white hover:bg-yellow border border-ink uppercase shadow-xs transition-colors"
+                        className="px-2 py-1 bg-white hover:bg-yellow border border-ink uppercase shadow-xs transition-colors flex items-center gap-1"
                       >
-                        ⚠️ Tone Issue ("CHEAP")
+                        <AlertTriangle className="w-3 h-3 text-ink" />
+                        <span>Tone Issue ("CHEAP")</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => loadBrowserPreset("claim")}
-                        className="px-2 py-1 bg-white hover:bg-yellow border border-ink uppercase shadow-xs transition-colors"
+                        className="px-2 py-1 bg-white hover:bg-yellow border border-ink uppercase shadow-xs transition-colors flex items-center gap-1"
                       >
-                        🚨 Superlative Claim ("#1")
+                        <AlertOctagon className="w-3 h-3 text-danger" />
+                        <span>Superlative Claim ("#1")</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => loadBrowserPreset("confidential")}
-                        className="px-2 py-1 bg-white hover:bg-yellow border border-ink uppercase shadow-xs transition-colors"
+                        className="px-2 py-1 bg-white hover:bg-yellow border border-ink uppercase shadow-xs transition-colors flex items-center gap-1"
                       >
-                        🔒 NDA Term ("Project Falcon")
+                        <Lock className="w-3 h-3 text-ink" />
+                        <span>NDA Term ("Project Falcon")</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => loadBrowserPreset("clean")}
-                        className="px-2 py-1 bg-mint hover:bg-ink hover:text-white border border-ink uppercase shadow-xs transition-colors"
+                        className="px-2 py-1 bg-mint hover:bg-ink hover:text-white border border-ink uppercase shadow-xs transition-colors flex items-center gap-1"
                       >
-                        ✅ 100% Clean Copy
+                        <CheckCircle2 className="w-3 h-3 text-emerald-800" />
+                        <span>100% Clean Copy</span>
                       </button>
                     </div>
                   </div>
@@ -430,8 +440,9 @@ export default function ExtensionsPage() {
                           Nova Fest University Festival
                         </div>
                         <div className="text-[10px] text-gray-600 font-mono flex items-center gap-1.5 mt-0.5">
-                          <span className="px-1.5 py-0.2 bg-gray-100 border border-gray-400 font-bold">
-                            Post to Anyone 🌐
+                          <span className="px-1.5 py-0.2 bg-gray-100 border border-gray-400 font-bold inline-flex items-center gap-1">
+                            <span>Post to Anyone</span>
+                            <Globe className="w-3 h-3 inline-block" />
                           </span>
                           <span>•</span>
                           <span>Draft Mode</span>
@@ -452,7 +463,7 @@ export default function ExtensionsPage() {
                       {/* In-Situ Trigger Chip */}
                       {browserFindings.length > 0 && (
                         <div className="absolute top-2 right-2 bg-yellow text-ink font-mono text-[11px] font-bold px-2.5 py-1 border-2 border-ink shadow-brutal-sm flex items-center gap-1.5 animate-pulse">
-                          <span>🛡️</span>
+                          <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
                           <span>Verity: {browserFindings.length} Citation{browserFindings.length > 1 ? "s" : ""}</span>
                         </div>
                       )}
@@ -489,7 +500,7 @@ export default function ExtensionsPage() {
                   <div className="brutal-card p-4 bg-cream border-3 border-ink shadow-brutal-md space-y-3 sticky top-4">
                     <div className="flex items-center justify-between border-b-2 border-ink pb-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-base">🛡️</span>
+                        <ShieldCheck className="w-4 h-4 text-ink stroke-[2.5]" />
                         <span className="font-heading font-black text-xs uppercase text-ink">
                           In-Situ Brand Guard
                         </span>
@@ -563,7 +574,8 @@ export default function ExtensionsPage() {
                               onClick={() => applyBrowserFix(f.phrase, f.suggestedFix)}
                               className="w-full mt-1 bg-mint hover:bg-yellow border-2 border-ink text-[10px] font-bold py-1 px-2 uppercase shadow-xs transition-colors flex items-center justify-center gap-1"
                             >
-                              <span>✓ Apply Fix:</span>
+                              <Check className="w-3 h-3 stroke-[2.5] shrink-0" />
+                              <span>Apply Fix:</span>
                               <span className="truncate">"{f.suggestedFix}"</span>
                             </button>
                           </div>
@@ -662,7 +674,7 @@ export default function ExtensionsPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b-2 border-ink pb-2">
                       <div className="flex items-center gap-1.5 font-bold uppercase text-ink">
-                        <span>🛡️</span>
+                        <ShieldCheck className="w-4 h-4 text-ink stroke-[2.5]" />
                         <span>Verity Figma Guard</span>
                       </div>
                       <span className="px-1.5 py-0.5 bg-mint border border-ink text-[9px] font-bold text-ink">
@@ -676,8 +688,12 @@ export default function ExtensionsPage() {
                       disabled={figmaScanning}
                       className="w-full brutal-btn brutal-btn-yellow py-2.5 px-3 border-2 font-bold shadow-brutal-sm flex items-center justify-center gap-2 uppercase text-xs"
                     >
-                      <Zap className={`w-3.5 h-3.5 ${figmaScanning ? "animate-spin" : ""}`} />
-                      <span>{figmaScanning ? "Traversing Scenegraph..." : "🔍 Scan Canvas Text Layers"}</span>
+                      {figmaScanning ? (
+                        <Zap className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Search className="w-3.5 h-3.5 stroke-[2.5]" />
+                      )}
+                      <span>{figmaScanning ? "Traversing Scenegraph..." : "Scan Canvas Text Layers"}</span>
                     </button>
 
                     {/* Scanned Findings List */}

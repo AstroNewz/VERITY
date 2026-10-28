@@ -21,19 +21,19 @@ figma.ui.onmessage = async (msg) => {
   if (msg.type === "SCAN_SELECTION") {
     const selection = figma.currentPage.selection;
     if (selection.length === 0) {
-      figma.notify("⚠️ Please select one or more frames or text layers on the canvas.");
+      figma.notify("[NOTICE] Please select one or more frames or text layers on the canvas.");
       figma.ui.postMessage({ type: "SCAN_RESULT", nodes: [], count: 0 });
       return;
     }
 
     const textNodes = extractTextNodes(selection);
     if (textNodes.length === 0) {
-      figma.notify("⚠️ No text layers found inside current selection.");
+      figma.notify("[NOTICE] No text layers found inside current selection.");
       figma.ui.postMessage({ type: "SCAN_RESULT", nodes: [], count: 0 });
       return;
     }
 
-    figma.notify(`🔍 Verity: Scanning ${textNodes.length} text layer(s)...`);
+    figma.notify(`Verity: Scanning ${textNodes.length} text layer(s)...`);
     figma.ui.postMessage({
       type: "SCAN_RESULT",
       nodes: textNodes,
@@ -46,29 +46,29 @@ figma.ui.onmessage = async (msg) => {
     const node = figma.getNodeById(nodeId);
 
     if (!node || node.type !== "TEXT") {
-      figma.notify("❌ Could not locate the target text layer.");
+      figma.notify("[ERROR] Could not locate the target text layer.");
       return;
     }
 
     try {
       if (node.hasMissingFont) {
-        figma.notify("⚠️ Cannot edit layer: font is missing on your system.");
+        figma.notify("[NOTICE] Cannot edit layer: font is missing on your system.");
         return;
       }
 
       // In Figma, font must be loaded before updating text
       if (typeof node.fontName === "symbol") {
-        figma.notify("⚠️ Layer contains mixed fonts; applying with fallback.");
+        figma.notify("[NOTICE] Layer contains mixed fonts; applying with fallback.");
       } else {
         await figma.loadFontAsync(node.fontName);
       }
 
       node.characters = newText;
-      figma.notify(`✅ Verity: Layer '${node.name}' updated with compliant brand copy!`);
+      figma.notify(`Verity: Layer '${node.name}' updated with compliant brand copy!`);
       figma.ui.postMessage({ type: "FIX_SUCCESS", nodeId, newText });
     } catch (err) {
       console.error("Error updating Figma node:", err);
-      figma.notify(`❌ Failed to update text layer: ${err.message}`);
+      figma.notify(`[ERROR] Failed to update text layer: ${err.message}`);
     }
   }
 

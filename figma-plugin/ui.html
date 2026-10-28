@@ -143,14 +143,20 @@
 <body>
   <div class="header">
     <div>
-      <div class="brand-title">🛡️ Verity Figma Guard</div>
+      <div class="brand-title" style="display:flex; align-items:center; gap:6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Verity Figma Guard</span>
+      </div>
       <div class="brand-subtitle">CITES BEFORE IT FLAGS • ROUND 3</div>
     </div>
     <div class="status-badge" id="api-badge">API Connected</div>
   </div>
 
   <div class="btn-row">
-    <button id="scan-btn">🔍 Scan Selected Text Layers</button>
+    <button id="scan-btn" style="display:flex; align-items:center; justify-content:center; gap:6px;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <span>Scan Selected Text Layers</span>
+    </button>
     <button id="demo-btn" class="btn-white" title="Simulate scanning a campaign poster banner">Demo</button>
   </div>
 
@@ -210,7 +216,7 @@
       if (msg.type === "FIX_SUCCESS") {
         const btn = document.querySelector(`[data-apply-node="${msg.nodeId}"]`);
         if (btn) {
-          btn.textContent = "✓ Fix Applied to Canvas Layer";
+          btn.textContent = "Fix Applied to Canvas Layer";
           btn.style.background = "#FFE500";
         }
       }
@@ -246,8 +252,9 @@
 
         if (findings.length === 0) {
           html += `
-            <div style="font-size:10px; color:#00AA44; font-weight:bold;">
-              ✓ 100% Brand Compliant
+            <div style="font-size:10px; color:#00AA44; font-weight:bold; display:flex; align-items:center; gap:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00AA44" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>100% Brand Compliant</span>
             </div>
           `;
         } else {
