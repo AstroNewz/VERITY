@@ -150,15 +150,15 @@ export default function Navbar() {
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 sm:h-20 gap-2">
+        <div className="flex justify-between items-center py-2.5 sm:py-3.5 gap-2 sm:gap-4">
           {/* Logo */}
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <a href="/" className="flex items-center gap-2 sm:gap-3 group">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow border-2 sm:border-3 border-ink flex items-center justify-center shadow-brutal-sm sm:shadow-brutal-btn group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0">
-                <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7 text-ink stroke-[2.5]" />
+              <div className="w-9 h-9 sm:w-11 sm:h-11 bg-yellow border-2 sm:border-3 border-ink flex items-center justify-center shadow-brutal-sm sm:shadow-brutal-btn group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0">
+                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-ink stroke-[2.5]" />
               </div>
               <div>
-                <span className="text-2xl sm:text-3xl font-heading font-black tracking-tight text-ink block leading-none">
+                <span className="text-xl sm:text-2xl font-heading font-black tracking-tight text-ink block leading-none">
                   VERITY
                 </span>
                 <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-ink block mt-0.5">
@@ -167,28 +167,6 @@ export default function Navbar() {
               </div>
             </a>
           </div>
-
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href || (item.href === "/workspace" && pathname === "/");
-              const Icon = item.icon;
-              return (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 font-mono text-xs font-bold uppercase transition-all border-2 whitespace-nowrap shrink-0 ${
-                    isActive
-                      ? "bg-yellow text-ink border-ink shadow-brutal-sm"
-                      : "text-ink border-transparent hover:border-ink hover:bg-white"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {item.label}
-                </a>
-              );
-            })}
-          </nav>
 
           {/* Role Switcher & Actions */}
           <div className="flex items-center gap-1.5 sm:gap-2">
@@ -271,7 +249,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-1.5 sm:p-2 border-2 border-ink bg-white shadow-brutal-sm hover:bg-yellow transition-colors"
+              className="lg:hidden p-1.5 sm:p-2 border-2 border-ink bg-white shadow-brutal-sm hover:bg-yellow transition-colors shrink-0"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? (
@@ -283,6 +261,32 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Dedicated Navigation Flex Bar — All 8 buttons visible & optimized across every screen size */}
+      <nav className="w-full border-t-2 sm:border-t-3 border-ink bg-white shadow-xs">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-1.5 sm:py-2">
+          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto sm:flex-wrap justify-start sm:justify-center xl:justify-between scrollbar-none touch-pan-x">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href || (item.href === "/workspace" && pathname === "/");
+              const Icon = item.icon;
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 font-mono text-[11px] sm:text-xs font-bold uppercase transition-all border-2 whitespace-nowrap shrink-0 ${
+                    isActive
+                      ? "bg-yellow text-ink border-ink shadow-brutal-sm"
+                      : "border-transparent text-ink hover:border-ink hover:bg-cream"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.2]" />
+                  <span>{item.label}</span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
 
       {/* Mobile Drawer (When Hamburger is Clicked) */}
       {mobileMenuOpen && (
@@ -431,24 +435,6 @@ export default function Navbar() {
           </div>
         </div>
       )}
-
-      {/* Swipeable Tab Bar for Quick Mobile Access */}
-      <div className="lg:hidden flex items-center overflow-x-auto px-3 py-1.5 bg-white border-t-2 border-ink gap-1.5 scrollbar-none touch-pan-x">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <a
-              key={item.href}
-              href={item.href}
-              className={`whitespace-nowrap px-2.5 py-1 text-xs font-mono font-bold border-2 shrink-0 ${
-                isActive ? "bg-yellow border-ink shadow-brutal-sm" : "border-gray-200 text-gray-700"
-              }`}
-            >
-              {item.label}
-            </a>
-          );
-        })}
-      </div>
     </header>
   );
 }
