@@ -104,7 +104,7 @@ def generate_round3_pdf(output_path: str):
     header_data = [
         [
             Paragraph("<b>VERITY // ROUND 3 FINAL SUBMISSION REPORT</b>", ParagraphStyle('HdrLeft', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, textColor=INK)),
-            Paragraph("<b>TEAM BRAKET (TOP 100) | CODEAXIS 2026</b>", ParagraphStyle('HdrRight', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, textColor=INK, alignment=2))
+            Paragraph("<b>TEAM BRAKET (TOP 50 FINALIST) | CODEAXIS 2026</b>", ParagraphStyle('HdrRight', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, textColor=INK, alignment=2))
         ]
     ]
     t_header = Table(header_data, colWidths=[3.7 * inch, 3.7 * inch])

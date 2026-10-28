@@ -7,7 +7,7 @@
 ╚██╗ ██╔╝██╔══╝  ██╔══██╗██║   ██║     ╚██╔╝  
  ╚████╔╝ ███████╗██║  ██║██║   ██║      ██║   
   ╚═══╝  ╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝      ╚═╝   
-BRAND GOVERNANCE PLATFORM // CODEAXIS ROUND 3 // TEAM BRAKET (TOP 100 FINALIST)
+BRAND GOVERNANCE PLATFORM // CODEAXIS ROUND 3 // TEAM BRAKET (TOP 50 FINALIST)
 ```
 
 > **"Brand governance that cites before it flags."**  

@@ -63,7 +63,7 @@ def apply_round3_deck_updates(input_pptx: str, output_pptx: str):
     
     # --- SLIDE 1 ---
     s1 = prs.slides[0].shapes
-    update_shape(s1[6], "Round 3: Product Completion (Top 100) | Live: cosmicboom.xyz & verity-brand-governance.vercel.app")
+    update_shape(s1[6], "Round 3: Product Completion (Top 50 Finalist) | Live: cosmicboom.xyz & verity-brand-governance.vercel.app")
     update_shape(s1[13], "Rule C-12: no approved source (Brand Book pg. 14)")
     
     # --- SLIDE 2 ---
@@ -163,7 +163,7 @@ def apply_round3_deck_updates(input_pptx: str, output_pptx: str):
     update_shape(s10[8], "Primary: cosmicboom.xyz\nMirror: verity-brand-governance.vercel.app")
     update_shape(s10[13], "Backend: verity-api.onrender.com\nRepo: github.com/IshanShukla-1/VERITY")
     update_shape(s10[18], "Deliverables: Round 3 PDF Report,\nInteractive Verifier, Extension & Figma Plugin")
-    update_shape(s10[25], "Team BraKet | CodeAxis Round 3: Product Completion | Top 100 Finalist")
+    update_shape(s10[25], "Team BraKet | CodeAxis Round 3: Product Completion | Top 50 Finalist")
     
     prs.save(output_pptx)
     print(f"Presentation saved to: {output_pptx}")

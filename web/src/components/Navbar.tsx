@@ -22,7 +22,8 @@ import {
   X,
   ArrowRight,
   Compass,
-  Puzzle
+  Puzzle,
+  Award
 } from "lucide-react";
 
 export default function Navbar() {
@@ -109,9 +110,13 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-cream border-b-3 border-ink">
       {/* Top Banner / Ticker */}
       <div className="bg-ink text-cream py-1 px-4 text-xs font-mono font-bold uppercase tracking-wider flex justify-between items-center overflow-hidden">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="bg-mint text-ink px-2 py-0.5 font-black border border-white flex items-center gap-1 shadow-xs">
+            <Award className="w-3 h-3 stroke-[2.5]" />
+            <span>TOP 50 FINALIST</span>
+          </span>
           <span className="bg-yellow text-ink px-2 py-0.5 font-bold">DEMO MODE</span>
-          <span>NOVA FEST UNIVERSITY FESTIVAL — BRAND GOVERNANCE ACTIVE</span>
+          <span className="hidden sm:inline">NOVA FEST UNIVERSITY FESTIVAL — BRAND GOVERNANCE ACTIVE</span>
         </div>
         <div className="hidden md:flex items-center gap-4 text-gray-300">
           <span>RULE ENFORCEMENT: 100% CITED</span>
