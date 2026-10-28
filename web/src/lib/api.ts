@@ -59,7 +59,8 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 export const api = {
   health: {
     check: async () => {
-      const res = await fetch(`${API_BASE}/health`);
+      // Pings root "/" which returns 200 on all Render container deployments
+      const res = await fetch(`${API_BASE}/`);
       if (!res.ok) throw new Error("Cold or unhealthy");
       return await res.json();
     },

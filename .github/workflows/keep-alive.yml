@@ -11,13 +11,13 @@ jobs:
     name: Ping Render Cloud Gateway
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Health Endpoint
+      - name: Ping Root Endpoint
         run: |
-          echo "Pinging https://verity-api.onrender.com/health to prevent Render sleep..."
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 https://verity-api.onrender.com/health)
+          echo "Pinging https://verity-api.onrender.com/ to keep Render container warm..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 https://verity-api.onrender.com/)
           echo "Response HTTP Status: $HTTP_STATUS"
           if [ "$HTTP_STATUS" -eq 200 ]; then
-            echo "Render API is warm and responsive!"
+            echo "SUCCESS: Render container is warm and responsive!"
           else
-            echo "API returned status $HTTP_STATUS (or waking up)"
+            echo "Notice: Status $HTTP_STATUS received (container waking up)"
           fi

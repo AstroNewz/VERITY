@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     apiStatus.textContent = "Checking...";
     apiStatus.style.background = "#FFE500";
     try {
-      const res = await fetch(`${apiBase}/health`, { signal: AbortSignal.timeout(4000) });
+      const res = await fetch(`${apiBase}/`, { signal: AbortSignal.timeout(4000) });
       if (res.ok) {
         apiStatus.textContent = "API Ready";
         apiStatus.style.background = "#00FF66";
