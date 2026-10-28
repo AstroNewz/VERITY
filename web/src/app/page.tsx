@@ -64,7 +64,7 @@ export default function LandingPage() {
                 Round 3 Commitment
               </span>
               <h2 className="font-heading font-black text-sm uppercase text-ink">
-                All 3 Round 2 Commitments Delivered 100%
+                All 3 Round 3 Commitments Delivered 100%
               </h2>
             </div>
             <span className="font-mono text-[10px] text-gray-600 font-bold uppercase">

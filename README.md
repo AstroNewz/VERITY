@@ -255,7 +255,7 @@ python scripts/run_accuracy_check.py
 
 ## 🧭 07 // SELF-GUIDED TUTORIAL MODE & HOW IT WORKS
 
-To satisfy **Round 2 Evaluation Criterion #5: Usability (Judges must be able to understand and use the functioning part of the product without guidance)**, Verity incorporates an interactive, in-situ **Neo-Brutalist Tour Guide Engine**.
+To satisfy **Round 3 Evaluation Criterion #5: Usability (Judges must be able to understand and use the functioning product without team assistance)**, Verity incorporates an interactive, in-situ **Neo-Brutalist Tour Guide Engine**.
 
 Because team members cannot be present during the judging evaluation session, this self-guided tutorial acts as a continuous virtual companion that spotlights key controls, explains why each step matters, and shows judges exactly how to test every feature.
 
@@ -437,6 +437,6 @@ VERITY/
 ## 👥 14 // TEAM BRAKET
 
 - **Project:** Verity
-- **Competition:** CodeAxis Round 2 ("The Build")
+- **Competition:** CodeAxis Round 3 (Top 50 Finalist)
 - **Tagline:** *"Brand governance that cites before it flags."*
 - **Aesthetic:** Neo-Brutalism (`#FFFBEF` cream, `#111111` ink, `#FFE500` yellow, `#00FF66` mint, 3px solid borders, hard offset shadows, zero border-radius).

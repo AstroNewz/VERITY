@@ -52,7 +52,7 @@ export default function RootLayout({
               <div className="flex items-center gap-3">
                 <span className="font-heading font-black text-lg">VERITY</span>
                 <span className="text-gray-500">|</span>
-                <span>Team BraKet — CodeAxis Round 2 ("The Build")</span>
+                <span>Team BraKet — CodeAxis Round 3 (Top 50 Finalist)</span>
               </div>
               <div className="flex items-center gap-4">
                 <span className="bg-mint text-ink font-bold px-2 py-0.5 border border-ink shadow-brutal-sm">

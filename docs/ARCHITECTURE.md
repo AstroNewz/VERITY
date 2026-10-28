@@ -1,6 +1,6 @@
 # Verity — Architecture & Implementation Record
 
-**Product:** Verity | **Team:** BraKet | **Round:** CodeAxis Round 2 ("The Build")  
+**Product:** Verity | **Team:** BraKet | **Round:** CodeAxis Round 3 (Top 50 Finalist)  
 **Tagline:** *"Brand governance that cites before it flags."*  
 **Promise:** *"Brand errors caught before they are public."*  
 **Execution Status:** **AUDITED, HARDENED & VERIFIED**

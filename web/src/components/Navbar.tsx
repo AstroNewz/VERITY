@@ -177,7 +177,7 @@ export default function Navbar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 font-mono text-xs font-bold uppercase transition-all border-2 ${
+                  className={`flex items-center gap-1.5 px-2.5 xl:px-3 py-1.5 font-mono text-xs font-bold uppercase transition-all border-2 whitespace-nowrap shrink-0 ${
                     isActive
                       ? "bg-yellow text-ink border-ink shadow-brutal-sm"
                       : "text-ink border-transparent hover:border-ink hover:bg-white"
