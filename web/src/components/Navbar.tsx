@@ -121,14 +121,25 @@ export default function Navbar() {
 
       {/* Cold Server Wakeup Alert (Audit Item C) */}
       {isWakingServer && (
-        <div className="bg-coral text-white py-2 px-4 text-xs font-mono font-bold flex items-center justify-between border-b-2 border-ink animate-pulse">
-          <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 animate-spin stroke-[2.5]" />
-            <span>Waking the server, this can take up to a minute (Render / Cloud Spin-Up)...</span>
+        <div className="bg-coral text-white py-2.5 px-4 text-xs font-mono font-bold flex flex-wrap items-center justify-between gap-3 border-b-3 border-ink shadow-brutal-sm">
+          <div className="flex items-center gap-2.5">
+            <Activity className="w-4 h-4 animate-spin stroke-[2.5] text-yellow shrink-0" />
+            <span className="text-white font-bold">
+              Waking the server, this can take up to a minute (Render / Cloud Spin-Up)...
+            </span>
           </div>
-          <span className="text-[10px] uppercase tracking-wider bg-ink text-white px-2 py-0.5 border border-white">
-            Cold Start Detected
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase tracking-wider bg-ink text-yellow px-2 py-0.5 border border-white font-black">
+              Cold Start Detected
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsWakingServer(false)}
+              className="text-[10px] uppercase tracking-wider bg-white text-ink px-2 py-0.5 border border-ink font-black hover:bg-yellow transition-colors"
+            >
+              Dismiss
+            </button>
+          </div>
         </div>
       )}
 

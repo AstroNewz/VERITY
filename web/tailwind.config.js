@@ -31,6 +31,11 @@ module.exports = {
         danger: {
           DEFAULT: "#E5484D",
           light: "#FFE5E5",
+        },
+        coral: {
+          DEFAULT: "#FF3366",
+          dark: "#E02958",
+          light: "#FFE5EC",
         }
       },
       boxShadow: {
