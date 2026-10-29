@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/authContext";
 import { 
@@ -466,7 +466,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
             pointerEvents: el.style.pointerEvents || "",
           };
           el.style.position = "relative";
-          el.style.zIndex = "102";
+          el.style.zIndex = "95";
           el.style.pointerEvents = "auto";
         }
       } else {
@@ -548,8 +548,206 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     };
   }, [isActive, currentStep, nextStep]);
 
-  // Smart placement for desktop card: if target is on right half, put card on left
-  const isTargetOnRight = targetRect ? targetRect.left > (typeof window !== "undefined" ? window.innerWidth / 2 : 700) : false;
+  // Window dimensions for collision avoidance
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 1200,
+    height: typeof window !== "undefined" ? window.innerHeight : 800,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Dynamic Collision-Free Placement for the Tour Guidance Window
+  // Ensures the tour card NEVER obstructs or overlaps the active highlighted feature
+  const cardStyle = useMemo<React.CSSProperties>(() => {
+    const vw = windowSize.width;
+    const vh = windowSize.height;
+
+    // Mobile layout (< 640px): dock to top or bottom opposite to target center
+    if (vw < 640) {
+      if (!targetRect) {
+        return {
+          position: "fixed",
+          bottom: "16px",
+          left: "12px",
+          right: "12px",
+          zIndex: 105,
+        };
+      }
+      const targetCenterY = targetRect.top + targetRect.height / 2;
+      // If target is in the lower half of screen, place guidance card at top (below sticky header)
+      if (targetCenterY > vh / 2) {
+        return {
+          position: "fixed",
+          top: "76px",
+          left: "12px",
+          right: "12px",
+          zIndex: 105,
+        };
+      } else {
+        // If target is in the upper half of screen, place guidance card at bottom
+        return {
+          position: "fixed",
+          bottom: "16px",
+          left: "12px",
+          right: "12px",
+          zIndex: 105,
+        };
+      }
+    }
+
+    // Desktop / Tablet layout (>= 640px)
+    const cardW = Math.min(520, vw - 48);
+    const cardH = 340; // estimated max height of guidance card
+    const topNavOffset = 88; // safe offset below sticky navbar (z-50)
+
+    if (!targetRect) {
+      return {
+        position: "fixed",
+        top: `${topNavOffset}px`,
+        right: "24px",
+        width: `${cardW}px`,
+        zIndex: 105,
+      };
+    }
+
+    // Candidate placements with explicit bounding boxes
+    const candidates = [
+      // 1. Right-Top quadrant
+      {
+        style: {
+          position: "fixed" as const,
+          top: `${topNavOffset}px`,
+          right: "24px",
+          width: `${cardW}px`,
+          zIndex: 105,
+        },
+        box: {
+          left: vw - cardW - 24,
+          right: vw - 24,
+          top: topNavOffset,
+          bottom: topNavOffset + cardH,
+        },
+      },
+      // 2. Left-Top quadrant
+      {
+        style: {
+          position: "fixed" as const,
+          top: `${topNavOffset}px`,
+          left: "24px",
+          width: `${cardW}px`,
+          zIndex: 105,
+        },
+        box: {
+          left: 24,
+          right: 24 + cardW,
+          top: topNavOffset,
+          bottom: topNavOffset + cardH,
+        },
+      },
+      // 3. Right-Bottom quadrant
+      {
+        style: {
+          position: "fixed" as const,
+          bottom: "24px",
+          right: "24px",
+          width: `${cardW}px`,
+          zIndex: 105,
+        },
+        box: {
+          left: vw - cardW - 24,
+          right: vw - 24,
+          top: vh - cardH - 24,
+          bottom: vh - 24,
+        },
+      },
+      // 4. Left-Bottom quadrant
+      {
+        style: {
+          position: "fixed" as const,
+          bottom: "24px",
+          left: "24px",
+          width: `${cardW}px`,
+          zIndex: 105,
+        },
+        box: {
+          left: 24,
+          right: 24 + cardW,
+          top: vh - cardH - 24,
+          bottom: vh - 24,
+        },
+      },
+      // 5. Directly below target if space allows
+      {
+        style: {
+          position: "fixed" as const,
+          top: `${Math.min(vh - cardH - 24, Math.max(topNavOffset, targetRect.bottom + 16))}px`,
+          left: `${Math.min(vw - cardW - 24, Math.max(24, targetRect.left))}px`,
+          width: `${cardW}px`,
+          zIndex: 105,
+        },
+        box: {
+          left: Math.min(vw - cardW - 24, Math.max(24, targetRect.left)),
+          right: Math.min(vw - 24, Math.max(24 + cardW, targetRect.left + cardW)),
+          top: targetRect.bottom + 16,
+          bottom: targetRect.bottom + 16 + cardH,
+        },
+      },
+      // 6. Directly above target if space allows
+      {
+        style: {
+          position: "fixed" as const,
+          top: `${Math.max(topNavOffset, targetRect.top - cardH - 16)}px`,
+          left: `${Math.min(vw - cardW - 24, Math.max(24, targetRect.left))}px`,
+          width: `${cardW}px`,
+          zIndex: 105,
+        },
+        box: {
+          left: Math.min(vw - cardW - 24, Math.max(24, targetRect.left)),
+          right: Math.min(vw - 24, Math.max(24 + cardW, targetRect.left + cardW)),
+          top: targetRect.top - cardH - 16,
+          bottom: targetRect.top - 16,
+        },
+      },
+    ];
+
+    // Helper: collision detection with safety padding (16px)
+    const doesIntersect = (b: { left: number; right: number; top: number; bottom: number }) => {
+      const pad = 16;
+      return !(
+        b.right + pad < targetRect.left ||
+        b.left - pad > targetRect.right ||
+        b.bottom + pad < targetRect.top ||
+        b.top - pad > targetRect.bottom
+      );
+    };
+
+    // Pick first candidate that doesn't intersect the target element
+    for (const cand of candidates) {
+      if (!doesIntersect(cand.box)) {
+        return cand.style;
+      }
+    }
+
+    // Default fallback: place in opposite half from target center
+    const targetCenterX = targetRect.left + targetRect.width / 2;
+    const targetCenterY = targetRect.top + targetRect.height / 2;
+    return {
+      position: "fixed",
+      top: targetCenterY > vh / 2 ? `${topNavOffset}px` : undefined,
+      bottom: targetCenterY <= vh / 2 ? "24px" : undefined,
+      left: targetCenterX > vw / 2 ? "24px" : undefined,
+      right: targetCenterX <= vw / 2 ? "24px" : undefined,
+      width: `${cardW}px`,
+      zIndex: 105,
+    };
+  }, [targetRect, windowSize]);
 
   return (
     <TourContext.Provider
@@ -568,12 +766,19 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     >
       {children}
 
-      {/* Spotlight Tour Overlay & Guidance Card */}
+      {/* Layer Architecture:
+          Layer 1 (z-0..40): Base page content
+          Layer 2 (z-50): Sticky Navbar / Header
+          Layer 3 (z-90): Tour Overlay Container (pointer-events-none)
+          Layer 4 (z-92): Spotlight Cutout Ring & 9999px Backdrop Shadow (pointer-events-none)
+          Layer 5 (z-95): Elevated Target Element (relative, pointer-events-auto, fully clickable)
+          Layer 6 (z-105): Collision-Free Dynamic Tour Guidance Window (pointer-events-auto)
+      */}
       {isActive && currentStep && (
-        <div className="fixed inset-0 z-[100] overflow-hidden pointer-events-none">
-          {/* Translucent Backdrop: darkens the entire page */}
+        <div className="fixed inset-0 z-[90] overflow-hidden pointer-events-none">
+          {/* Translucent Backdrop: darkens the entire page when no target */}
           <div
-            className={`absolute inset-0 transition-opacity duration-300 ${
+            className={`absolute inset-0 transition-opacity duration-300 z-[91] ${
               targetRect ? "bg-transparent pointer-events-none" : "bg-ink/80 pointer-events-auto"
             }`}
           />
@@ -587,16 +792,15 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
                 width: `${targetRect.width + 12}px`,
                 height: `${targetRect.height + 12}px`,
               }}
-              className="absolute pointer-events-none border-4 border-yellow ring-4 ring-ink ring-offset-2 ring-offset-white z-[101] shadow-[0_0_0_9999px_rgba(17,17,17,0.80)] transition-all duration-300"
+              className="absolute pointer-events-none border-4 border-yellow ring-4 ring-ink ring-offset-2 ring-offset-white z-[92] shadow-[0_0_0_9999px_rgba(17,17,17,0.80)] transition-all duration-300"
             />
           )}
 
-          {/* Neo-Brutalist Tour Guidance Card */}
+          {/* Dynamic Collision-Free Tour Guidance Window */}
           <div
             id="verity-tour-guidance-card"
-            className={`absolute inset-x-3 bottom-3 sm:bottom-auto sm:inset-x-auto max-w-lg lg:max-w-xl z-[105] pointer-events-auto transition-all duration-300 ${
-              isTargetOnRight ? "sm:left-6 sm:top-20" : "sm:right-6 sm:top-20"
-            }`}
+            style={cardStyle}
+            className="pointer-events-auto transition-all duration-300 ease-out"
           >
             <div className="brutal-card p-4 sm:p-6 bg-white border-4 border-ink shadow-brutal-xl space-y-3.5 max-h-[85vh] overflow-y-auto">
               {/* Header: Track Selector Tabs & Dismiss Button */}

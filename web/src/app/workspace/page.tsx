@@ -280,7 +280,7 @@ export default function WorkspacePage() {
                 ? `Groq AI Active (${submission.ai_model || "Llama 3.3 70B"}): Multi-agent intent preservation & voice tone checks enabled.`
                 : submission.ai_status === "daily_cap_exceeded"
                 ? `AI review paused for today: Global daily quota reached. Gracefully operating in 100% deterministic rule citation & ledger verification mode.`
-                : `Demo Notice: Deterministic Engine Active. Groq API key offline. Deterministic rules, Privacy Gateway, and Claim Ledger are operating with full fidelity.`}
+                : `Prototype Notice: Deterministic Engine Active. Groq API key offline. Deterministic rules, Privacy Gateway, and Claim Ledger are operating with full fidelity.`}
             </span>
           </div>
           <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 border border-ink bg-white text-ink font-mono font-black shrink-0">

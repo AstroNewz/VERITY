@@ -323,7 +323,7 @@ export default function ExtensionsPage() {
               }`}
             >
               <Globe className="w-4 h-4 stroke-[2.5]" />
-              <span>Browser Extension Demo</span>
+              <span>Browser Extension Prototype</span>
             </button>
             <button
               type="button"
@@ -335,7 +335,7 @@ export default function ExtensionsPage() {
               }`}
             >
               <Layers className="w-4 h-4 stroke-[2.5]" />
-              <span>Figma Plugin Demo</span>
+              <span>Figma Plugin Prototype</span>
             </button>
           </div>
         </div>

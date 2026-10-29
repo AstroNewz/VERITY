@@ -179,7 +179,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-2 mb-4 pb-2 border-b-2 border-ink">
             <Zap className="w-5 h-5 text-yellow fill-yellow stroke-ink stroke-[2]" />
             <h2 className="font-heading font-black text-xl tracking-tight uppercase">
-              Zero-Setup Demo: Choose Your Role
+              Zero-Setup Working Prototype: Choose Your Role
             </h2>
           </div>
 

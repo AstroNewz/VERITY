@@ -56,7 +56,7 @@ export default function DemoLoader({ onSelectPost, selectedPostId }: DemoLoaderP
             className="brutal-btn brutal-btn-white text-xs py-2 sm:py-1.5 px-3 border-2 flex items-center justify-center gap-1.5 font-bold flex-1 sm:flex-initial"
           >
             <Zap className="w-3.5 h-3.5 fill-current" />
-            <span className="truncate">Load Demo #1</span>
+            <span className="truncate">Load Sample #1</span>
           </button>
 
           {/* Dropdown for all 6 presets */}

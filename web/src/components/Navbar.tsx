@@ -87,7 +87,7 @@ export default function Navbar() {
   };
 
   const handleReset = async () => {
-    if (confirm("Reset demo database back to clean Nova Fest seeded data?")) {
+    if (confirm("Reset prototype database back to clean Nova Fest seeded data?")) {
       setResetting(true);
       await resetDemoData();
       setResetting(false);
@@ -115,7 +115,7 @@ export default function Navbar() {
             <Award className="w-3 h-3 stroke-[2.5]" />
             <span>TOP 50 FINALIST</span>
           </span>
-          <span className="bg-yellow text-ink px-2 py-0.5 font-bold">DEMO MODE</span>
+          <span className="bg-yellow text-ink px-2 py-0.5 font-bold">WORKING PROTOTYPE</span>
           <span className="hidden sm:inline">NOVA FEST UNIVERSITY FESTIVAL — BRAND GOVERNANCE ACTIVE</span>
         </div>
         <div className="hidden md:flex items-center gap-4 text-gray-300">
@@ -239,7 +239,7 @@ export default function Navbar() {
               onClick={handleReset}
               disabled={resetting}
               className="brutal-btn brutal-btn-white text-xs px-2 sm:px-2.5 py-1 sm:py-1.5 flex items-center gap-1.5 border-2 shadow-brutal-sm"
-              title="Reset seeded demo database"
+              title="Reset seeded prototype database"
             >
               <RotateCcw className={`w-3.5 h-3.5 ${resetting ? "animate-spin" : ""}`} />
               <span className="hidden md:inline">Reset</span>
@@ -430,7 +430,7 @@ export default function Navbar() {
               className="brutal-btn brutal-btn-white text-xs py-2 px-3 border-2 w-full flex items-center justify-center gap-2 shadow-brutal-sm"
             >
               <RotateCcw className={`w-3.5 h-3.5 ${resetting ? "animate-spin" : ""}`} />
-              <span>Reset Seeded Demo Data</span>
+              <span>Reset Prototype Data</span>
             </button>
           </div>
         </div>
