@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/authContext";
 import { 
@@ -425,9 +425,25 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isActive, nextStep, prevStep, skipTour]);
 
-  // Target element spotlight calculation & scrolling
+  // Target element spotlight calculation & elevation
+  const prevElevatedRef = useRef<{ el: HTMLElement; position: string; zIndex: string; pointerEvents: string } | null>(null);
+
+  const restoreElevatedElement = useCallback(() => {
+    if (prevElevatedRef.current) {
+      const { el, position, zIndex, pointerEvents } = prevElevatedRef.current;
+      el.style.position = position;
+      el.style.zIndex = zIndex;
+      el.style.pointerEvents = pointerEvents;
+      prevElevatedRef.current = null;
+    }
+  }, []);
+
   useEffect(() => {
-    if (!isActive || !currentStep) return;
+    if (!isActive || !currentStep) {
+      restoreElevatedElement();
+      setTargetRect(null);
+      return;
+    }
 
     let attempts = 0;
     const findTarget = () => {
@@ -436,6 +452,23 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
         const rect = el.getBoundingClientRect();
         setTargetRect(rect);
         el.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        // Elevate element so it sits above backdrop and is 100% interactive
+        if (prevElevatedRef.current && prevElevatedRef.current.el !== el) {
+          restoreElevatedElement();
+        }
+
+        if (!prevElevatedRef.current) {
+          prevElevatedRef.current = {
+            el,
+            position: el.style.position || "",
+            zIndex: el.style.zIndex || "",
+            pointerEvents: el.style.pointerEvents || "",
+          };
+          el.style.position = "relative";
+          el.style.zIndex = "102";
+          el.style.pointerEvents = "auto";
+        }
       } else {
         setTargetRect(null);
       }
@@ -443,7 +476,6 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     };
 
     findTarget();
-    // Continuous polling every 150ms for up to 4s to ensure target is found during route transitions
     const interval = setInterval(() => {
       findTarget();
       if (attempts > 25) clearInterval(interval);
@@ -457,8 +489,64 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       clearInterval(interval);
       window.removeEventListener("resize", handleUpdate);
       window.removeEventListener("scroll", handleUpdate, true);
+      restoreElevatedElement();
     };
-  }, [isActive, currentStepIndex, activeTrack, pathname, currentStep]);
+  }, [isActive, currentStepIndex, activeTrack, pathname, currentStep, restoreElevatedElement]);
+
+  // Dual-Progression: Listen for direct user interaction on highlighted target element
+  useEffect(() => {
+    if (!isActive || !currentStep) return;
+
+    let advanceTimer: NodeJS.Timeout | null = null;
+
+    const handleInteractiveAdvancement = (e: Event) => {
+      // Ignore clicks within the tour guidance card itself
+      const card = document.getElementById("verity-tour-guidance-card");
+      if (card && card.contains(e.target as Node)) {
+        return;
+      }
+
+      const targetEl = document.getElementById(currentStep.targetId);
+      const clickedTarget = e.target as HTMLElement;
+      if (!clickedTarget) return;
+
+      // Check if click occurred inside current step's target element
+      const isInsideTarget = Boolean(targetEl && targetEl.contains(clickedTarget));
+
+      // Also detect direct clicks on primary action buttons across the workflow
+      const isRunBtnClick = Boolean(clickedTarget.closest("#tour-run-check-btn"));
+      const isSubmitBtnClick = Boolean(clickedTarget.closest("#tour-submit-approval-btn"));
+      const isApproveBtnClick = Boolean(clickedTarget.closest("#tour-approve-passport-btn"));
+      const isPresetClick = Boolean(clickedTarget.closest("#tour-presets-bar"));
+      const isCreatorCardClick = Boolean(clickedTarget.closest("#tour-creator-card"));
+
+      // If user is inside the draft editor box and simply focusing the textarea to type, do not advance
+      if (
+        currentStep.targetId === "tour-editor-box" &&
+        (clickedTarget.tagName === "TEXTAREA" || clickedTarget.tagName === "INPUT")
+      ) {
+        return;
+      }
+
+      if (isInsideTarget || isRunBtnClick || isSubmitBtnClick || isApproveBtnClick || isPresetClick || isCreatorCardClick) {
+        if (advanceTimer) clearTimeout(advanceTimer);
+        // Short debounce so button action or state change starts first, then advance smoothly
+        advanceTimer = setTimeout(() => {
+          nextStep();
+        }, 320);
+      }
+    };
+
+    // Use capture phase so we intercept before any child stopPropagation can block it
+    document.addEventListener("click", handleInteractiveAdvancement, true);
+    document.addEventListener("change", handleInteractiveAdvancement, true);
+
+    return () => {
+      if (advanceTimer) clearTimeout(advanceTimer);
+      document.removeEventListener("click", handleInteractiveAdvancement, true);
+      document.removeEventListener("change", handleInteractiveAdvancement, true);
+    };
+  }, [isActive, currentStep, nextStep]);
 
   // Smart placement for desktop card: if target is on right half, put card on left
   const isTargetOnRight = targetRect ? targetRect.left > (typeof window !== "undefined" ? window.innerWidth / 2 : 700) : false;
@@ -482,11 +570,11 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
       {/* Spotlight Tour Overlay & Guidance Card */}
       {isActive && currentStep && (
-        <div className="fixed inset-0 z-[100] overflow-hidden pointer-events-auto">
+        <div className="fixed inset-0 z-[100] overflow-hidden pointer-events-none">
           {/* Translucent Backdrop: darkens the entire page */}
           <div
             className={`absolute inset-0 transition-opacity duration-300 ${
-              targetRect ? "bg-transparent" : "bg-ink/80"
+              targetRect ? "bg-transparent pointer-events-none" : "bg-ink/80 pointer-events-auto"
             }`}
           />
 
@@ -505,6 +593,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
           {/* Neo-Brutalist Tour Guidance Card */}
           <div
+            id="verity-tour-guidance-card"
             className={`absolute inset-x-3 bottom-3 sm:bottom-auto sm:inset-x-auto max-w-lg lg:max-w-xl z-[105] pointer-events-auto transition-all duration-300 ${
               isTargetOnRight ? "sm:left-6 sm:top-20" : "sm:right-6 sm:top-20"
             }`}
@@ -573,6 +662,16 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
               <div className="p-2.5 bg-mint-light border-2 border-mint-dark text-xs font-mono font-bold text-emerald-950 flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5 stroke-[2.5]" />
                 <span>{currentStep.howToTest}</span>
+              </div>
+
+              {/* Dual Progression Notice Banner */}
+              <div className="flex items-center gap-2 p-2 bg-yellow-light/60 border border-ink text-[10px] font-mono">
+                <span className="font-bold text-ink uppercase flex items-center gap-1 shrink-0">
+                  <Play className="w-3 h-3 fill-ink" /> 2 WAYS TO ADVANCE:
+                </span>
+                <span className="text-gray-800">
+                  Click the highlighted button on screen OR click "Next Step" below.
+                </span>
               </div>
 
               {/* Navigation Controls Row */}
